@@ -1,6 +1,7 @@
 package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.mapper.MovieDoMapper;
@@ -34,6 +35,16 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
     public List<MovieDo> selectNotDO() {
         MovieDo movieDo = new MovieDo();
         movieDo.setIsDo(0);
-        return this.baseMapper.selectList(new QueryWrapper<MovieDo>(movieDo));
+        Page<MovieDo> page = new Page<>(1,100);
+        return baseMapper.selectPage(page, new QueryWrapper<MovieDo>(movieDo)).getRecords();
+    }
+
+    @Override
+    public void doMovie(Long movieCode) {
+        MovieDo movieDo = baseMapper.selectOne(new QueryWrapper<MovieDo>().eq("movie_code",movieCode));
+        if (movieDo !=null){
+            movieDo.setIsDo(1);
+            baseMapper.updateById(movieDo);
+        }
     }
 }

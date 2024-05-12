@@ -9,8 +9,6 @@ import com.example.movieboxoffice.spider.detail.MovieDetailSpider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * <p>
  *  服务实现类
@@ -29,11 +27,15 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
 
     @Override
-    public void crawlDetail() {
-        List<MovieDo> movieDos = movieDoService.selectNotDO();
-        for (MovieDo movieDo : movieDos){
-            spider.getDefaultSpider(movieDo.getMovieName()).run();
-            break;
-        }
+    public void crawlDetail()  {
+//        List<MovieDo> movieDos = movieDoService.selectNotDO();
+//        for (MovieDo movieDo : movieDos){
+//            spider.getDefaultSpider(movieDo).run();
+//            System.out.println("--------------休息-----------------");
+//            Thread.sleep(1000*3);
+//        }
+        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(11);
+        spider.getDefaultSpider(movieDo1).run();
+
     }
 }

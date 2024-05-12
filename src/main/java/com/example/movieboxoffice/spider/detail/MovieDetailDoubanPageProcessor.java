@@ -17,7 +17,7 @@ import java.util.List;
  *
  */
 @Component
-public class MovieDetailPageProcessor implements PageProcessor {
+public class MovieDetailDoubanPageProcessor implements PageProcessor {
 
     private Site site = Site.me().setCharset("utf-8").setRetryTimes(3)
             .setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
@@ -25,6 +25,11 @@ public class MovieDetailPageProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
+
+
+        String url = page.getRequest().getUrl();
+        int index = url.indexOf("item/");
+        page.putField("movieName",url.substring(index +5));
 
         Html html = page.getHtml();
         List<String> lista = html.xpath("//div[@class='basicInfo_spa7J J-basic-info']//dt[@class='basicInfoItem_s_YWZ itemName_Un9Kz']/text()").all();
@@ -54,12 +59,21 @@ public class MovieDetailPageProcessor implements PageProcessor {
             }
         }
         List<String> instruction = html.xpath("//div[@class='J-lemma-content']/div[2]/span/text()").all();
+        List<String> name  = html.xpath("//div[@class='J-lemma-content']/div[2]/span/a/text()").all();
         if (instruction.size()>0){
             StringBuilder sb = new StringBuilder();
+            int nameCount = 0;
             for (String str : instruction){
                 sb.append(str);
+                if (str.equals("（")){
+                    sb.append(name.get(nameCount));
+                    nameCount++;
+                }
             }
-            page.putField("instruction",sb.toString());
+            if (sb.length()>1024)
+                page.putField("instruction",sb.substring(0,1024));
+            else
+                page.putField("instruction",sb.toString());
         }
         String pic = html.xpath("//div[@class='albumListBox_dODAM']/div[@class='albumContent_FaHVd']/div[2]/img").get();
         if (pic!=null){
@@ -69,12 +83,6 @@ public class MovieDetailPageProcessor implements PageProcessor {
             page.putField("poster",pic);
         }
 
-//        page.putField("list",(jsonObject.get("list")).toString());
-//        page.putField("nationalSales",(jsonObject.get("nationalSales")));
-//        String url = page.getRequest().getUrl();
-//        int index = url.indexOf("date=");
-//        String date = url.substring(index +5, index + 15);
-//        page.putField("date",date);
 
     }
 
@@ -85,21 +93,13 @@ public class MovieDetailPageProcessor implements PageProcessor {
 
     private String getResult(String html){
         List<String> list = new Html(html).xpath("//span[@class='text_jaYku']/text()").all();
-        if (list.size()==0){
-            list = new Html(html).xpath("//span[@class='text_jaYku']/a/text()").all();
+        list.addAll(new Html(html).xpath("//span[@class='text_jaYku']/a/text()").all());
+        StringBuilder sb = new StringBuilder();
+        for (String s : list){
+            if (s.equals("")) continue;
+            sb.append(s).append(" ");
         }
-        if (list.size()==0){
-            return "";
-        }else if (list.size()==1){
-            return list.get(0);
-        }else {
-            StringBuilder sb = new StringBuilder();
-            for (String s : list){
-                sb.append(s).append(" ");
-            }
-            return sb.toString();
-        }
-
+        return sb.toString();
 
     }
 }

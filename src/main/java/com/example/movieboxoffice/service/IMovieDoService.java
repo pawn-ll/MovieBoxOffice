@@ -19,4 +19,6 @@ public interface IMovieDoService extends IService<MovieDo> {
 
     List<MovieDo> selectNotDO();
 
+    void doMovie(Long movieCode);
+
 }

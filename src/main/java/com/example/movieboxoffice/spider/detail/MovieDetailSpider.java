@@ -1,23 +1,27 @@
 package com.example.movieboxoffice.spider.detail;
 
+import com.example.movieboxoffice.entity.MovieDo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Spider;
 
 @Component
 public class MovieDetailSpider {
-
     @Autowired
-    private MovieDetailPageProcessor spiderPageProcessor;
+    private MovieDetailBaiduPageProcessor spiderPageProcessor;
     @Autowired
-    private MovieDetailPipeline pipeline;
+    private MovieDetailBaiduPipeline pipeline;
 
 
     private static String url = "https://baike.baidu.com/item/";
 
 
-    public  Spider getDefaultSpider(String movieName){
-        return Spider.create(spiderPageProcessor).addPipeline(pipeline).addUrl(url+movieName).thread(5);
+    public  Spider getDefaultSpider(MovieDo movieDo){
+        return Spider.create(spiderPageProcessor)
+                .addPipeline(pipeline)
+                .addUrl(url+movieDo.getMovieName())
+                .setUUID(movieDo.getMovieCode().toString())
+                .thread(3);
     }
 
 

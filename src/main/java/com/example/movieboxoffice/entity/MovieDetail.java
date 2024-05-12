@@ -29,7 +29,7 @@ public class MovieDetail implements Serializable {
     /**
      * 电影id
      */
-    private Integer movieCode;
+    private Long movieCode;
 
     /**
      * 电影名称
@@ -54,7 +54,7 @@ public class MovieDetail implements Serializable {
     /**
      * 影片时长
      */
-    private Integer length;
+    private String length;
 
     /**
      * 制片地区
@@ -83,11 +83,11 @@ public class MovieDetail implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getMovieCode() {
+    public Long getMovieCode() {
         return movieCode;
     }
 
-    public void setMovieCode(Integer movieCode) {
+    public void setMovieCode(Long movieCode) {
         this.movieCode = movieCode;
     }
     public String getMovieName() {
@@ -118,11 +118,11 @@ public class MovieDetail implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
-    public Integer getLength() {
+    public String getLength() {
         return length;
     }
 
-    public void setLength(Integer length) {
+    public void setLength(String length) {
         this.length = length;
     }
     public String getArea() {

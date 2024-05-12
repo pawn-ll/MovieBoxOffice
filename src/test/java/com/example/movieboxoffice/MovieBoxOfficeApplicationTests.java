@@ -28,7 +28,7 @@ class MovieBoxOfficeApplicationTests {
 
 
     @Test
-    public void detailSpider(){
+    public void detailSpider() {
         movieDetailService.crawlDetail();
     }
 
@@ -36,7 +36,7 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void dateSpider(){
-        dailyBoxofficeService.todaySpiderCrawl();
+//        dailyBoxofficeService.todaySpiderCrawl();
 //        dailyBoxofficeService.spiderCrawl("2024-05-10");
 
     }

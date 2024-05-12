@@ -13,6 +13,6 @@ import com.example.movieboxoffice.entity.MovieDetail;
  */
 public interface IMovieDetailService extends IService<MovieDetail> {
 
-    void crawlDetail();
+    void crawlDetail() throws InterruptedException, Exception;
 
 }
