@@ -35,9 +35,20 @@ class MovieBoxOfficeApplicationTests {
 
 
     @Test
-    public void detailSpider() {
-        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(1);
+    public void detailListSpider() throws InterruptedException {
+        List<MovieDo> movieDos = movieDoService.selectNotDO();
+        for (MovieDo movieDo : movieDos){
+            doubanService.getMovieDetail(movieDo);
+            System.out.println("--------------休息-----------------");
+            Thread.sleep(1000*6);
+        }
+
+    }
+    @Test
+    public void detailSpider()  {
+        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(50);
         doubanService.getMovieDetail(movieDo1);
+
     }
 
 

@@ -2,7 +2,6 @@ package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDetail;
-import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.mapper.MovieDetailMapper;
 import com.example.movieboxoffice.service.IMovieDetailService;
 import com.example.movieboxoffice.spider.detail.MovieDetailSpider;
@@ -34,8 +33,7 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 //            System.out.println("--------------休息-----------------");
 //            Thread.sleep(1000*3);
 //        }
-        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(11);
-        spider.getDoubanSpider(movieDo1).run();
+
 
     }
 }

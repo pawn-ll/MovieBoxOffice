@@ -51,6 +51,19 @@ public class MovieDetail implements Serializable {
      */
     private String actor;
 
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    /**
+     * 上映日期
+     */
+    private String releaseDate;
+
     /**
      * 影片类型
      */

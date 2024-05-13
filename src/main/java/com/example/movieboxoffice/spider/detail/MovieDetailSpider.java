@@ -11,12 +11,6 @@ public class MovieDetailSpider {
     private MovieDetailBaiduPageProcessor spiderPageProcessor;
     @Autowired
     private MovieDetailBaiduPipeline pipeline;
-    @Autowired
-    private MovieDetailDoubanPageProcessor doubanPageProcessor;
-    @Autowired
-    private MovieDetailDoubanPipeline doubanPipeline;
-    @Autowired
-    private MovieDetailDoubanDownloader doubanDownloader;
 
 
     private static String baiduUrl = "https://baike.baidu.com/item/";
@@ -33,14 +27,6 @@ public class MovieDetailSpider {
                 .thread(3);
     }
 
-    public  Spider getDoubanSpider(MovieDo movieDo){
-        return Spider.create(doubanPageProcessor)
-                .addPipeline(doubanPipeline)
-                .addUrl(doubanUrl+movieDo.getMovieName())
-                .setUUID(movieDo.getMovieCode().toString())
-                .setDownloader(doubanDownloader)
-                .thread(5);
-    }
 
 
 

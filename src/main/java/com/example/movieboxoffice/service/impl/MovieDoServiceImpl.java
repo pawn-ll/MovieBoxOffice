@@ -35,7 +35,7 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
     public List<MovieDo> selectNotDO() {
         MovieDo movieDo = new MovieDo();
         movieDo.setIsDo(0);
-        Page<MovieDo> page = new Page<>(1,100);
+        Page<MovieDo> page = new Page<>(1,20);
         return baseMapper.selectPage(page, new QueryWrapper<MovieDo>(movieDo)).getRecords();
     }
 

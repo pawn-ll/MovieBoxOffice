@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.example.movieboxoffice.entity.DoubanSuggest;
 import com.example.movieboxoffice.entity.MovieDetail;
 import com.example.movieboxoffice.entity.MovieDo;
+import com.example.movieboxoffice.entity.SecondDo;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
+import com.example.movieboxoffice.service.impl.SecondDoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.selector.Html;
@@ -31,16 +33,33 @@ public class MovieDetailDoubanService {
     private MovieDetailServiceImpl movieDetailService;
     @Autowired
     private MovieDoServiceImpl movieDoService;
+    @Autowired
+    private SecondDoServiceImpl secondDoService;
 
 
     public void getMovieDetail(MovieDo movieDo) {
-        String url = movieDetail(movieDo);
-        getSuggestMovieDetail(url);
+        try {
+            DoubanSuggest suggest = movieDetail(movieDo);
+            if (suggest !=null) {
+                getSuggestMovieDetail(suggest.getUrl(), suggest.getImg());
+            }else {
+                System.out.println("------------"+movieName+" 未匹配成功");
+                SecondDo secondDo =new SecondDo();
+                secondDo.setMovieCode(movieCode);
+                secondDo.setMovieName(movieName);
+                secondDoService.save(secondDo);
+                movieDoService.doMovie(movieCode);
+            }
+        }catch (Exception e){
+            System.out.println(movieName+"  爬取失败");
+            System.out.println(e);
+        }
+
     }
 
-    private String  movieDetail(MovieDo movieDo) {
-        movieName = movieDo.getMovieName();
+    private DoubanSuggest  movieDetail(MovieDo movieDo) {
         movieCode = movieDo.getMovieCode();
+        movieName = movieDo.getMovieName();
         String requestUrl = BASE_URL + (encodeQuery(movieDo.getMovieName()));
         DoubanSuggest movie = null;
         try {
@@ -60,10 +79,10 @@ public class MovieDetailDoubanService {
                 // 解析JSON响应
 //                JSONObject jsonObject = JSONObject.parseObject(response.toString());
                 JSONArray subjects = JSON.parseArray(response.toString());
-                movie = subjects.getObject(0, DoubanSuggest.class);
+                if (subjects.size() < 1) return null;
+                movie = getDoubanSuggest(subjects,movieDo.getMovieName());
                 System.out.println(movie);
-                return movie.getUrl();
-
+                return movie;
             } else {
                 System.err.println("请求失败，状态码：" + connection.getResponseCode());
             }
@@ -74,7 +93,7 @@ public class MovieDetailDoubanService {
         return null;
     }
 
-    private  void getSuggestMovieDetail(String suggestUrl) {
+    private  void getSuggestMovieDetail(String suggestUrl,String poster) {
         if (suggestUrl == null) {
             System.out.println("电影详情获取失败");
             return;
@@ -114,22 +133,36 @@ public class MovieDetailDoubanService {
             }
             String director = sb.toString();
 
-            List<String> scripters = new Html(persons.get(1)).xpath("//a/text()").all();
-            sb = new StringBuilder();
-            for (String s : scripters) {
-                sb.append(s);
-                sb.append(" ");
+            String scripter = "";
+            if (persons.size()>2) {
+                List<String> scripters = new Html(persons.get(1)).xpath("//a/text()").all();
+                sb = new StringBuilder();
+                for (String s : scripters) {
+                    sb.append(s);
+                    sb.append(" ");
+                }
+                scripter = sb.toString();
             }
-            String scripter = sb.toString();
-
-            List<String> actors = new Html(persons.get(2)).xpath("//a/text()").all();
-            sb = new StringBuilder();
-            for (String s : actors) {
-                sb.append(s);
-                sb.append(" ");
+            String actor = "";
+            if (persons.size()==2) {
+                List<String> actors = new Html(persons.get(1)).xpath("//a/text()").all();
+                sb = new StringBuilder();
+                for (String s : actors) {
+                    if ((sb.length()+s).length()>256) break;
+                    sb.append(s);
+                    sb.append(" ");
+                }
+                actor = sb.toString();
+            }else if (persons.size()>2){
+                List<String> actors = new Html(persons.get(2)).xpath("//a/text()").all();
+                sb = new StringBuilder();
+                for (String s : actors) {
+                    if ((sb.length()+s).length()>256) break;
+                    sb.append(s);
+                    sb.append(" ");
+                }
+                actor = sb.toString();
             }
-            String actor = sb.toString();
-
             List<String> types = html.xpath("//*[@id='info']/span[@property='v:genre']/text()").all();
             sb = new StringBuilder();
             for (String s : types) {
@@ -137,19 +170,29 @@ public class MovieDetailDoubanService {
                 sb.append(" ");
             }
             String type = sb.toString();
+
+            List<String> releaseDates = html.xpath("//*[@id='info']/span[@property='v:initialReleaseDate']/text()").all();
+            sb = new StringBuilder();
+            for (String s : releaseDates) {
+                sb.append(s);
+                sb.append(" ");
+            }
+            String releaseDate = sb.toString();
+
             String area = html.xpath("//*[@id='info']//text()").get().replace("/","").trim().split(" ")[0];
             String time = html.xpath("//*[@id='info']/span[@property='v:runtime']/text()").get();
             String introduction = html.xpath("//span[@property='v:summary']/text()").get();
-            String poster = html.xpath("//*[@id='mainpic']/a/img").get();
-            poster = poster.substring(poster.indexOf("src=")+5, poster.indexOf("title=")-2);
             MovieDetail movieDetail = new MovieDetail();
             movieDetail.setMovieName(movieName);
-            movieDetail.setDirector(director);
-            movieDetail.setScripter(scripter);
-            movieDetail.setActor(actor);
-            movieDetail.setType(type);
-            movieDetail.setArea(area);
-            movieDetail.setLength(time);
+            movieDetail.setDirector(director.trim());
+            movieDetail.setScripter(scripter.trim());
+            movieDetail.setActor(actor.trim());
+            movieDetail.setReleaseDate(releaseDate.trim());
+            movieDetail.setType(type.trim());
+            movieDetail.setArea(area.trim());
+            if (time != null) {
+                movieDetail.setLength(time.trim());
+            }
             if (introduction.length() > 1024){
                 movieDetail.setIntroduction(introduction.substring(0,1024));
             }else {
@@ -158,7 +201,7 @@ public class MovieDetailDoubanService {
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
             movieDetailService.save(movieDetail);
-//            movieDoService.doMovie(movieCode);
+            movieDoService.doMovie(movieCode);
         }
 
     }
@@ -169,6 +212,21 @@ public class MovieDetailDoubanService {
         } catch (Exception e) {
             throw new RuntimeException("Error encoding query", e);
         }
+    }
+
+    private DoubanSuggest getDoubanSuggest(JSONArray subjects, String movieName){
+        List<DoubanSuggest> doubanSuggests = JSONArray.parseArray(subjects.toString(), DoubanSuggest.class);
+        DoubanSuggest res = null;
+        for (DoubanSuggest doubanSuggest : doubanSuggests){
+            if (!doubanSuggest.getEpisode().equals("")){
+                continue;
+            }
+            if (!doubanSuggest.getTitle().equals(movieName)){
+                continue;
+            }
+            res = doubanSuggest;
+        }
+        return res;
     }
 
 }
