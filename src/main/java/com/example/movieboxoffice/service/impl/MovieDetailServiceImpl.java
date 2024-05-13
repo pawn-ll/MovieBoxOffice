@@ -35,7 +35,7 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 //            Thread.sleep(1000*3);
 //        }
         MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(11);
-        spider.getDefaultSpider(movieDo1).run();
+        spider.getDoubanSpider(movieDo1).run();
 
     }
 }

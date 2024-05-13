@@ -1,8 +1,11 @@
 package com.example.movieboxoffice;
 
+import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import com.example.movieboxoffice.service.impl.DailySumBoxofficeServiceImpl;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
+import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
+import com.example.movieboxoffice.spider.detail.MovieDetailDoubanService;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,10 @@ class MovieBoxOfficeApplicationTests {
     private DailySumBoxofficeServiceImpl dailySumBoxofficeService;
     @Autowired
     private MovieDetailServiceImpl movieDetailService;
+    @Autowired
+    private MovieDoServiceImpl movieDoService;
+    @Autowired
+    private MovieDetailDoubanService doubanService;
 
     @Test
     void contextLoads() {
@@ -29,7 +36,8 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void detailSpider() {
-        movieDetailService.crawlDetail();
+        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(1);
+        doubanService.getMovieDetail(movieDo1);
     }
 
 

@@ -11,6 +11,12 @@ import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 
+/**
+ *
+ * @author walnut
+ * @since  2024.5.12
+ *
+ */
 @Component
 @Log4j2
 public class MovieDetailDoubanPipeline implements Pipeline {

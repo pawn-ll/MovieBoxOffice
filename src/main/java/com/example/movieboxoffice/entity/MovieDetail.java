@@ -42,6 +42,11 @@ public class MovieDetail implements Serializable {
     private String director;
 
     /**
+     * 编剧
+     */
+    private String scripter;
+
+    /**
      * 主演
      */
     private String actor;
@@ -75,6 +80,9 @@ public class MovieDetail implements Serializable {
      * 创建时间
      */
     private Date createTime;
+
+    public MovieDetail() {
+    }
 
     public Integer getId() {
         return id;
@@ -152,6 +160,14 @@ public class MovieDetail implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getScripter() {
+        return scripter;
+    }
+
+    public void setScripter(String scripter) {
+        this.scripter = scripter;
     }
 
     @Override

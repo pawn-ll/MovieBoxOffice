@@ -11,19 +11,36 @@ public class MovieDetailSpider {
     private MovieDetailBaiduPageProcessor spiderPageProcessor;
     @Autowired
     private MovieDetailBaiduPipeline pipeline;
+    @Autowired
+    private MovieDetailDoubanPageProcessor doubanPageProcessor;
+    @Autowired
+    private MovieDetailDoubanPipeline doubanPipeline;
+    @Autowired
+    private MovieDetailDoubanDownloader doubanDownloader;
 
 
-    private static String url = "https://baike.baidu.com/item/";
+    private static String baiduUrl = "https://baike.baidu.com/item/";
+
+    private static String doubanUrl = "https://movie.douban.com/j/subject_suggest?q=";
 
 
-    public  Spider getDefaultSpider(MovieDo movieDo){
+
+    public  Spider getBaiduSpider(MovieDo movieDo){
         return Spider.create(spiderPageProcessor)
                 .addPipeline(pipeline)
-                .addUrl(url+movieDo.getMovieName())
+                .addUrl(baiduUrl+movieDo.getMovieName())
                 .setUUID(movieDo.getMovieCode().toString())
                 .thread(3);
     }
 
+    public  Spider getDoubanSpider(MovieDo movieDo){
+        return Spider.create(doubanPageProcessor)
+                .addPipeline(doubanPipeline)
+                .addUrl(doubanUrl+movieDo.getMovieName())
+                .setUUID(movieDo.getMovieCode().toString())
+                .setDownloader(doubanDownloader)
+                .thread(5);
+    }
 
 
 

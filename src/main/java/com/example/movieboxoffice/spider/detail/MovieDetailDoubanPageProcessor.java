@@ -1,6 +1,8 @@
 package com.example.movieboxoffice.spider.detail;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.example.movieboxoffice.entity.DoubanSuggest;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -11,9 +13,9 @@ import java.util.List;
 
 /**
  *
- * 电影详情爬虫页面
+ * 豆瓣电影详情爬虫页面
  * @author walnut
- * @since  2024.5.10
+ * @since  2024.5.12
  *
  */
 @Component
@@ -26,10 +28,15 @@ public class MovieDetailDoubanPageProcessor implements PageProcessor {
     @Override
     public void process(Page page) {
 
+        List<DoubanSuggest> doubanSuggests = JSONArray.parseArray(page.getRawText(), DoubanSuggest.class);
+        if (doubanSuggests.size() > 0) {
+            page.addTargetRequest(doubanSuggests.get(0).getUrl());
+            return;
+        }
 
         String url = page.getRequest().getUrl();
-        int index = url.indexOf("item/");
-        page.putField("movieName",url.substring(index +5));
+        int index = url.indexOf("q=");
+        page.putField("movieName",url.substring(index +2));
 
         Html html = page.getHtml();
         List<String> lista = html.xpath("//div[@class='basicInfo_spa7J J-basic-info']//dt[@class='basicInfoItem_s_YWZ itemName_Un9Kz']/text()").all();
