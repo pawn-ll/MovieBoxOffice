@@ -2,6 +2,9 @@ package com.example.movieboxoffice.service;
 
 import com.example.movieboxoffice.entity.DailyBoxoffice;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,4 +22,5 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
     void deleteByDates(String startDate , String endDate);
 
+    List<DailyBoxofficeVO> today();
 }

@@ -6,6 +6,7 @@ import com.example.movieboxoffice.entity.DoubanSuggest;
 import com.example.movieboxoffice.entity.MovieDetail;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.entity.SecondDo;
+import com.example.movieboxoffice.enums.MovieDetailLength;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
 import com.example.movieboxoffice.service.impl.SecondDoServiceImpl;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.selector.Html;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -44,24 +46,32 @@ public class MovieDetailDoubanService {
                 getSuggestMovieDetail(suggest.getUrl(), suggest.getImg());
             }else {
                 System.out.println("------------"+movieName+" 未匹配成功");
-                SecondDo secondDo =new SecondDo();
-                secondDo.setMovieCode(movieCode);
-                secondDo.setMovieName(movieName);
-                secondDoService.save(secondDo);
-                movieDoService.doMovie(movieCode);
+                    SecondDo secondDo = new SecondDo();
+                    secondDo.setMovieCode(movieCode);
+                    secondDo.setMovieName(movieName);
+                    secondDoService.save(secondDo);
+                    movieDoService.doMovie(movieCode);
+
             }
         }catch (Exception e){
             System.out.println(movieName+"  爬取失败");
             System.out.println(e);
+            SecondDo secondDo = new SecondDo();
+            secondDo.setMovieCode(movieCode);
+            secondDo.setMovieName(movieName);
+            secondDoService.save(secondDo);
+            movieDoService.doMovie(movieCode);
         }
 
     }
 
-    private DoubanSuggest  movieDetail(MovieDo movieDo) {
+    private DoubanSuggest  movieDetail(MovieDo movieDo) throws IOException {
         movieCode = movieDo.getMovieCode();
         movieName = movieDo.getMovieName();
         String requestUrl = BASE_URL + (encodeQuery(movieDo.getMovieName()));
         DoubanSuggest movie = null;
+        BufferedReader reader = null;
+        StringBuilder response = null;
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(requestUrl).openConnection();
             connection.setRequestMethod("GET");
@@ -70,19 +80,17 @@ public class MovieDetailDoubanService {
             connection.connect();
 
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-                StringBuilder response = new StringBuilder();
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                response = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
                 // 解析JSON响应
-//                JSONObject jsonObject = JSONObject.parseObject(response.toString());
                 JSONArray subjects = JSON.parseArray(response.toString());
                 if (subjects.size() < 1) return null;
                 movie = getDoubanSuggest(subjects,movieDo.getMovieName());
                 System.out.println(movie);
-                return movie;
             } else {
                 System.err.println("请求失败，状态码：" + connection.getResponseCode());
             }
@@ -90,7 +98,7 @@ public class MovieDetailDoubanService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return movie;
     }
 
     private  void getSuggestMovieDetail(String suggestUrl,String poster) {
@@ -126,58 +134,28 @@ public class MovieDetailDoubanService {
         if (html != null) {
             List<String> persons = html.xpath("//*[@id='info']/span/span[@class='attrs']").all();
             List<String> directors = new Html(persons.get(0)).xpath("//a/text()").all();
-            StringBuilder sb = new StringBuilder();
-            for (String s : directors) {
-                sb.append(s);
-                sb.append(" ");
-            }
-            String director = sb.toString();
-
+            String director = getValidString(directors, MovieDetailLength.DIRECTOR.getLength());
             String scripter = "";
             if (persons.size()>2) {
                 List<String> scripters = new Html(persons.get(1)).xpath("//a/text()").all();
-                sb = new StringBuilder();
-                for (String s : scripters) {
-                    sb.append(s);
-                    sb.append(" ");
-                }
-                scripter = sb.toString();
+                scripter = getValidString(scripters, MovieDetailLength.SCIPTER.getLength());
             }
             String actor = "";
+            List<String> actors = null ;
             if (persons.size()==2) {
-                List<String> actors = new Html(persons.get(1)).xpath("//a/text()").all();
-                sb = new StringBuilder();
-                for (String s : actors) {
-                    if ((sb.length()+s).length()>256) break;
-                    sb.append(s);
-                    sb.append(" ");
-                }
-                actor = sb.toString();
+                actors = new Html(persons.get(1)).xpath("//a/text()").all();
+
             }else if (persons.size()>2){
-                List<String> actors = new Html(persons.get(2)).xpath("//a/text()").all();
-                sb = new StringBuilder();
-                for (String s : actors) {
-                    if ((sb.length()+s).length()>256) break;
-                    sb.append(s);
-                    sb.append(" ");
-                }
-                actor = sb.toString();
+                actors = new Html(persons.get(2)).xpath("//a/text()").all();
             }
+            if (actors.size()>0)
+                actor = getValidString(actors, MovieDetailLength.ACTOR.getLength());
+
             List<String> types = html.xpath("//*[@id='info']/span[@property='v:genre']/text()").all();
-            sb = new StringBuilder();
-            for (String s : types) {
-                sb.append(s);
-                sb.append(" ");
-            }
-            String type = sb.toString();
+            String type = getValidString(types, MovieDetailLength.TYPE.getLength());
 
             List<String> releaseDates = html.xpath("//*[@id='info']/span[@property='v:initialReleaseDate']/text()").all();
-            sb = new StringBuilder();
-            for (String s : releaseDates) {
-                sb.append(s);
-                sb.append(" ");
-            }
-            String releaseDate = sb.toString();
+            String releaseDate = getValidString(releaseDates, MovieDetailLength.TYPE.getLength());
 
             String area = html.xpath("//*[@id='info']//text()").get().replace("/","").trim().split(" ")[0];
             String time = html.xpath("//*[@id='info']/span[@property='v:runtime']/text()").get();
@@ -227,6 +205,17 @@ public class MovieDetailDoubanService {
             res = doubanSuggest;
         }
         return res;
+    }
+
+    private String getValidString(List<String> list,Integer length){
+        StringBuilder sb = new StringBuilder();
+        for (String s : list) {
+            if ((sb.length()+s.length()) > length)
+                break;
+            sb.append(s);
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
 }

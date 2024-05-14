@@ -1,7 +1,8 @@
 package com.example.movieboxoffice.service;
 
-import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.movieboxoffice.entity.DailySumBoxoffice;
+import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
 
 /**
  * <p>
@@ -14,5 +15,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IDailySumBoxofficeService extends IService<DailySumBoxoffice> {
 
     void deleteByDates(String startDate , String endDate);
+
+    DailySumBoxofficeVO today() ;
+
 
 }

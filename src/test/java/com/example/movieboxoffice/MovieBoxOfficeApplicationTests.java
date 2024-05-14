@@ -46,7 +46,7 @@ class MovieBoxOfficeApplicationTests {
     }
     @Test
     public void detailSpider()  {
-        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(50);
+        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(82);
         doubanService.getMovieDetail(movieDo1);
 
     }
@@ -55,7 +55,7 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void dateSpider(){
-//        dailyBoxofficeService.todaySpiderCrawl();
+        dailyBoxofficeService.todaySpiderCrawl();
 //        dailyBoxofficeService.spiderCrawl("2024-05-10");
 
     }

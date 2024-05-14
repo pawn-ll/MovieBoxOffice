@@ -1,7 +1,11 @@
 package com.example.movieboxoffice.controller;
 
+import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
+import com.example.movieboxoffice.service.impl.DailySumBoxofficeServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -11,8 +15,16 @@ import org.springframework.stereotype.Controller;
  * @author baomidou
  * @since 2024-05-07
  */
-@Controller
+@RestController
 @RequestMapping("/dailySumBoxoffice")
 public class DailySumBoxofficeController {
+
+    @Autowired
+    private DailySumBoxofficeServiceImpl dailySumBoxoffice;
+
+    @GetMapping("/today")
+    public DailySumBoxofficeVO getToday(){
+        return dailySumBoxoffice.today();
+    }
 
 }
