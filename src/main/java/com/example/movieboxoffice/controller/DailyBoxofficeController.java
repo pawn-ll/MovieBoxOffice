@@ -1,5 +1,6 @@
 package com.example.movieboxoffice.controller;
 
+import com.example.movieboxoffice.entity.Response;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,9 @@ public class DailyBoxofficeController {
     private DailyBoxofficeServiceImpl dailyBoxoffice;
 
     @GetMapping("/today")
-    public List<DailyBoxofficeVO> getToday(){
-        return dailyBoxoffice.today();
+    public Response<List<DailyBoxofficeVO>> getToday(){
+        List<DailyBoxofficeVO> today = dailyBoxoffice.today();
+        return Response.success(today);
     }
 
 }
