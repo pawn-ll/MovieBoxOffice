@@ -5,11 +5,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
+import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailySumBoxofficeMapper;
 import com.example.movieboxoffice.service.IDailySumBoxofficeService;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,5 +43,19 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
         DailySumBoxofficeVO sumBoxofficeVO = new DailySumBoxofficeVO();
         BeanUtils.copyProperties(dailySumBoxoffice, sumBoxofficeVO);
         return sumBoxofficeVO;
+    }
+
+    @Override
+    public HistoygramVO getDatesHistoygram(String startDate, String endDate) {
+        List<DailySumBoxoffice> dailySumBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailySumBoxoffice>()
+                .ge(DailySumBoxoffice::getDate, startDate)
+                .le(DailySumBoxoffice::getDate, endDate)
+                .orderByAsc(DailySumBoxoffice::getDate));
+        HistoygramVO histoygramVO = new HistoygramVO();
+        if (dailySumBoxoffices.size() > 0) {
+            histoygramVO.setXAxis(dailySumBoxoffices.stream().map(DailySumBoxoffice::getDate).collect(Collectors.toList()));
+            histoygramVO.setYAxis(dailySumBoxoffices.stream().map(DailySumBoxoffice::getSumBoxoffice).collect(Collectors.toList()));
+        }
+        return histoygramVO;
     }
 }

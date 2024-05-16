@@ -2,18 +2,23 @@ package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.movieboxoffice.entity.ConditionException;
 import com.example.movieboxoffice.entity.DailyBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
+import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
 import com.example.movieboxoffice.service.IDailyBoxofficeService;
 import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
 import com.example.movieboxoffice.utils.MyDateUtils;
+import lombok.SneakyThrows;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -69,5 +74,29 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
             }
         }
         return list;
+    }
+
+    @Override
+    @SneakyThrows
+    public HistoygramVO getDatesHistoygram(String startDate, String endDate, Long movieCode) {
+        if (movieCode == null){
+            throw new ConditionException("查询条件异常！");
+        }
+        List<DailyBoxoffice> dailySumBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+                .eq(DailyBoxoffice::getMovieCode,movieCode)
+                .ge(DailyBoxoffice::getRecordDate, startDate)
+                .le(DailyBoxoffice::getRecordDate, endDate)
+                .orderByAsc(DailyBoxoffice::getRecordDate));
+        HistoygramVO histoygramVO = new HistoygramVO();
+        if (dailySumBoxoffices.size() > 0){
+            histoygramVO.setXAxis(dailySumBoxoffices.stream().map(DailyBoxoffice::getRecordDate).collect(Collectors.toList()));
+            List<BigDecimal> y =(dailySumBoxoffices.stream().map(DailyBoxoffice::getDayBoxoffice).collect(Collectors.toList()));
+            List<String> yAxis = new ArrayList<>();
+            for (BigDecimal bigDecimal : y) {
+                yAxis.add(bigDecimal.toString());
+            }
+            histoygramVO.setYAxis(yAxis);
+        }
+        return histoygramVO;
     }
 }

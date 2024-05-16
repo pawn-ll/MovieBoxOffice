@@ -3,6 +3,7 @@ package com.example.movieboxoffice.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
+import com.example.movieboxoffice.entity.vo.HistoygramVO;
 
 /**
  * <p>
@@ -18,5 +19,5 @@ public interface IDailySumBoxofficeService extends IService<DailySumBoxoffice> {
 
     DailySumBoxofficeVO today() ;
 
-
+    HistoygramVO getDatesHistoygram(String startDate , String endDate);
 }

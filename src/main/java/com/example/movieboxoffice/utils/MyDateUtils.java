@@ -41,6 +41,33 @@ public class MyDateUtils {
         return sdf.parse(sdf.format(date));
 
     }
+    public static String getTodayAddDate(String pattern, int addDay){
+        return getAddDate(getNowStringDate(pattern),pattern,addDay);
+    }
+
+    /**
+     * 根据给定的日期字符串、日期格式和要增加的天数，返回一个新的日期字符串。
+     * @param date 传入的日期字符串
+     * @param pattern 日期字符串的格式
+     * @param addDay 需要增加的天数，可以为负数以表示减少天数
+     * @return 格式化后的日期字符串
+     */
+    public static String getAddDate(String date ,String pattern,int addDay){
+        SimpleDateFormat formatter = new SimpleDateFormat(pattern);
+        String endDateStr = "";
+        try {
+            Date startDate = formatter.parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startDate);
+            calendar.add(Calendar.DAY_OF_MONTH, addDay); // 加上x天
+
+            endDateStr = formatter.format(calendar.getTime()); // 格式化日期
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return endDateStr;
+    }
 
     /**
      * 生成指定年月的所有日期字符串，格式为yyyyMMdd。

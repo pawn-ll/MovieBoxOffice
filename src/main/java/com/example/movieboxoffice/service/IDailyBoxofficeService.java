@@ -3,6 +3,7 @@ package com.example.movieboxoffice.service;
 import com.example.movieboxoffice.entity.DailyBoxoffice;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
+import com.example.movieboxoffice.entity.vo.HistoygramVO;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
     void deleteByDates(String startDate , String endDate);
 
     List<DailyBoxofficeVO> today();
+
+    HistoygramVO getDatesHistoygram(String startDate, String endDate, Long movieCode);
 }
