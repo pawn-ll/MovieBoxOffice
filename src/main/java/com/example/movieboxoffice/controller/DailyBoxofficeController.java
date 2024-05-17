@@ -41,4 +41,10 @@ public class DailyBoxofficeController {
         return Response.success(histoygramVO);
     }
 
+    @GetMapping("/week-histoygram")
+    public Response<HistoygramVO> getWeekHistoygram(@RequestParam Long movieCode){
+        HistoygramVO histoygramVO = dailyBoxoffice.getWeekHistoygram( movieCode);
+        return Response.success(histoygramVO);
+    }
+
 }

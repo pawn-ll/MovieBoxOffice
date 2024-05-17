@@ -1,10 +1,12 @@
 package com.example.movieboxoffice.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.mapper.MovieDetailMapper;
 import com.example.movieboxoffice.service.IMovieDetailService;
-import com.example.movieboxoffice.spider.detail.MovieDetailSpider;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,20 +22,28 @@ import org.springframework.stereotype.Service;
 public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, MovieDetail> implements IMovieDetailService {
 
     @Autowired
-    private MovieDetailSpider spider;
-    @Autowired
     private MovieDoServiceImpl movieDoService;
+    @Autowired
+    private DailyBoxofficeServiceImpl dailyBoxofficeService;
 
 
     @Override
     public void crawlDetail()  {
 //        List<MovieDo> movieDos = movieDoService.selectNotDO();
 //        for (MovieDo movieDo : movieDos){
-//            spider.getDefaultSpider(movieDo).run();
-//            System.out.println("--------------休息-----------------");
-//            Thread.sleep(1000*3);
 //        }
 
 
+    }
+
+    @Override
+    public MovieDetailVO getDeatail(Long movieCode) {
+        MovieDetail movieDetail = new MovieDetail();
+        movieDetail.setMovieCode(movieCode);
+        movieDetail = this.getOne(new LambdaQueryWrapper<MovieDetail>(movieDetail));
+        MovieDetailVO movieDetailVO = new MovieDetailVO();
+        BeanUtils.copyProperties(movieDetail,movieDetailVO);
+        movieDetailVO.setSumBoxOffice(dailyBoxofficeService.latestBoxoffice(movieCode).getSumBoxoffice());
+        return movieDetailVO;
     }
 }

@@ -100,4 +100,31 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         }
         return histoygramVO;
     }
+
+    @Override
+    public HistoygramVO getWeekHistoygram(Long movieCode) {
+        String startDate = getReleaseDate(movieCode);
+        String endDate = MyDateUtils.getAddDate(startDate, MyDateUtils.YYMMDD, 7);
+        return getDatesHistoygram(startDate, endDate, movieCode);
+    }
+
+    @Override
+    public DailyBoxoffice latestBoxoffice(Long movieCode) {
+        return this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+                .eq(DailyBoxoffice::getMovieCode,movieCode)
+                .orderByDesc(DailyBoxoffice::getRecordDate)).get(0);
+    }
+
+
+    private String getReleaseDate(Long movieCode) {
+        DailyBoxoffice dailyBoxoffice = this.baseMapper.selectOne(new LambdaQueryWrapper<DailyBoxoffice>()
+                        .eq(DailyBoxoffice::getMovieCode,movieCode)
+                        .eq(DailyBoxoffice::getReleaseDays,1));
+        if (dailyBoxoffice == null){
+            dailyBoxoffice = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+                    .eq(DailyBoxoffice::getMovieCode,movieCode)
+                    .orderByAsc(DailyBoxoffice::getRecordDate)).get(0);
+        }
+        return dailyBoxoffice.getRecordDate();
+    }
 }

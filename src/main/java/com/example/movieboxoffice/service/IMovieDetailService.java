@@ -2,6 +2,7 @@ package com.example.movieboxoffice.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 
 /**
  * <p>
@@ -15,4 +16,5 @@ public interface IMovieDetailService extends IService<MovieDetail> {
 
     void crawlDetail() throws InterruptedException, Exception;
 
+    MovieDetailVO getDeatail(Long movieCode);
 }

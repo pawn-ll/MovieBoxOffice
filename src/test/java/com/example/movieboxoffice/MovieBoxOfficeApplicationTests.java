@@ -45,9 +45,16 @@ class MovieBoxOfficeApplicationTests {
 
     }
     @Test
-    public void detailSpider()  {
-        MovieDo movieDo1 = movieDoService.getBaseMapper().selectById(82);
-        doubanService.getMovieDetail(movieDo1);
+    public void todayDetailSpider() throws InterruptedException {
+        List<MovieDo> movieDos = movieDoService.selectTodayNotDO();
+        if (movieDos.size() == 0){
+            return;
+        }
+        for (MovieDo movieDo : movieDos){
+            doubanService.getMovieDetail(movieDo);
+            System.out.println("--------------休息-----------------");
+            Thread.sleep(1000*6);
+        }
 
     }
 

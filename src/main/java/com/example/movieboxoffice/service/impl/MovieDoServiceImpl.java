@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.mapper.MovieDoMapper;
 import com.example.movieboxoffice.service.IMovieDoService;
+import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,5 +47,13 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
             movieDo.setIsDo(1);
             baseMapper.updateById(movieDo);
         }
+    }
+
+    @Override
+    public List<MovieDo> selectTodayNotDO() {
+        MovieDo movieDo = new MovieDo();
+        movieDo.setIsDo(0);
+        movieDo.setMovieDate(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD));
+        return baseMapper.selectList(new QueryWrapper<MovieDo>(movieDo));
     }
 }

@@ -26,4 +26,10 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
     List<DailyBoxofficeVO> today();
 
     HistoygramVO getDatesHistoygram(String startDate, String endDate, Long movieCode);
+
+    HistoygramVO getWeekHistoygram(Long movieCode);
+
+    DailyBoxoffice latestBoxoffice(Long movieCode);
+
+
 }
