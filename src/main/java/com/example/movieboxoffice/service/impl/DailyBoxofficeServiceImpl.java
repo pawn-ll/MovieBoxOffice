@@ -68,6 +68,7 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         List<DailyBoxofficeVO> list = new ArrayList<>();
         if (dailyBoxoffices.size() > 0){
             for (DailyBoxoffice dailyBoxoffice : dailyBoxoffices) {
+                if (dailyBoxoffice.getDayBoxoffice().compareTo(BigDecimal.ONE) < 0) break;
                 DailyBoxofficeVO dailyBoxofficeVO = new DailyBoxofficeVO();
                 BeanUtils.copyProperties(dailyBoxoffice,dailyBoxofficeVO);
                 list.add(dailyBoxofficeVO);

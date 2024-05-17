@@ -12,6 +12,7 @@ import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,13 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
         HistoygramVO histoygramVO = new HistoygramVO();
         if (dailySumBoxoffices.size() > 0) {
             histoygramVO.setXAxis(dailySumBoxoffices.stream().map(DailySumBoxoffice::getDate).collect(Collectors.toList()));
-            histoygramVO.setYAxis(dailySumBoxoffices.stream().map(DailySumBoxoffice::getSumBoxoffice).collect(Collectors.toList()));
+            List<String> yAxis = new ArrayList<>();
+            dailySumBoxoffices.forEach(dailySumBoxoffice -> {
+                String sumBoxoffice = dailySumBoxoffice.getSumBoxoffice();
+                yAxis.add((sumBoxoffice.substring(0,sumBoxoffice.length()-2)));
+            });
+            histoygramVO.setYAxis(yAxis);
+
         }
         return histoygramVO;
     }

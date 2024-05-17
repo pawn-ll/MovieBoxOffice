@@ -8,6 +8,7 @@ import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,9 +34,9 @@ public class DailyBoxofficeController {
         return Response.success(today);
     }
     @GetMapping("/histoygram")
-    public Response<HistoygramVO> getDatesHistoygram( Long movieCode){
+    public Response<HistoygramVO> getDatesHistoygram(@RequestParam Long movieCode){
         String endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);;
-        String startDate = MyDateUtils.getAddDate(endDate, MyDateUtils.YYMMDD, -30);
+        String startDate = MyDateUtils.getAddDate(endDate, MyDateUtils.YYMMDD, -15);
         HistoygramVO histoygramVO = dailyBoxoffice.getDatesHistoygram(startDate, endDate, movieCode);
         return Response.success(histoygramVO);
     }
