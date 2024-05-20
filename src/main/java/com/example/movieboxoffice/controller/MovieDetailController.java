@@ -4,11 +4,7 @@ import com.example.movieboxoffice.entity.Response;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -18,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author baomidou
  * @since 2024-05-10
  */
-@Controller
+@RestController
 @RequestMapping("/movie")
 public class MovieDetailController {
 

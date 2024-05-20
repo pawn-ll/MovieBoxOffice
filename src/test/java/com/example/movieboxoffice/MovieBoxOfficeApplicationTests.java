@@ -1,10 +1,8 @@
 package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.entity.MovieDo;
-import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
-import com.example.movieboxoffice.service.impl.DailySumBoxofficeServiceImpl;
-import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
-import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
+import com.example.movieboxoffice.entity.vo.MovieBoxofficeVO;
+import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.detail.MovieDetailDoubanService;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.extern.log4j.Log4j2;
@@ -28,9 +26,14 @@ class MovieBoxOfficeApplicationTests {
     private MovieDoServiceImpl movieDoService;
     @Autowired
     private MovieDetailDoubanService doubanService;
+    @Autowired
+    private  MovieBoxofficeServiceImpl movieBoxofficeService;
 
     @Test
-    void contextLoads() {
+    public void testService() {
+//        movieBoxofficeService.insertAll();
+        List<MovieBoxofficeVO> top20 = movieBoxofficeService.getTop20();
+        System.out.println();
     }
 
 

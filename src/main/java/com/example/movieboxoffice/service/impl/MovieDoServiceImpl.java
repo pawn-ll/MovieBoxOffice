@@ -8,6 +8,7 @@ import com.example.movieboxoffice.mapper.MovieDoMapper;
 import com.example.movieboxoffice.service.IMovieDoService;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -24,11 +25,14 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
 
 
     @Override
-    public MovieDo selectByNameAndYear(String name, Integer year) {
+    public MovieDo selectByName(String name) {
         MovieDo movieDo = new MovieDo();
         movieDo.setMovieName(name);
-        movieDo.setMovieYear(year);
-        return  this.baseMapper.selectOne(new QueryWrapper<MovieDo>(movieDo));
+        List<MovieDo> movieDos = this.baseMapper.selectList(new QueryWrapper<MovieDo>(movieDo));
+        if (CollectionUtils.isEmpty(movieDos))
+            return movieDos.get(0);
+        else
+            return null;
 
     }
 

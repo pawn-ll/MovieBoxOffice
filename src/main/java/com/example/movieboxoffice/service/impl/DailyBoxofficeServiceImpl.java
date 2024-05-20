@@ -1,6 +1,7 @@
 package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.ConditionException;
 import com.example.movieboxoffice.entity.DailyBoxoffice;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -113,6 +115,46 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         return this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
                 .eq(DailyBoxoffice::getMovieCode,movieCode)
                 .orderByDesc(DailyBoxoffice::getRecordDate)).get(0);
+    }
+
+    @Override
+    public List<DailyBoxofficeVO> getDatesList(String startDate, String endDate) {
+        List<DailyBoxoffice> dailyBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+                .ge(DailyBoxoffice::getRecordDate, startDate)
+                .le(DailyBoxoffice::getRecordDate, endDate)
+                .ge(DailyBoxoffice::getDayBoxoffice, BigDecimal.ONE));
+        List<DailyBoxofficeVO> list = new ArrayList<>();
+        Map<Long, List<DailyBoxoffice>> map  ;
+        if (dailyBoxoffices.size() > 0){
+            map = dailyBoxoffices.stream().collect(Collectors.groupingBy(DailyBoxoffice::getMovieCode));
+            map.forEach((k,v)->{
+                DailyBoxofficeVO dailyBoxofficeVO = new DailyBoxofficeVO();
+                if (v.size() > 1) {
+                    BeanUtils.copyProperties(v.get(0), dailyBoxofficeVO);
+                    BigDecimal sumBoxoffice = BigDecimal.ZERO;
+                    for (DailyBoxoffice dailyBoxoffice : v) {
+                        sumBoxoffice = sumBoxoffice.add(dailyBoxoffice.getDayBoxoffice());
+                    }
+                    dailyBoxofficeVO.setSumBoxoffice(sumBoxoffice.toString());
+                }else {
+                    BeanUtils.copyProperties(v.get(0), dailyBoxofficeVO);
+                }
+                list.add(dailyBoxofficeVO);
+            });
+        }
+        list.sort((o1, o2) -> {
+            if(o1.getDayBoxoffice().compareTo(o2.getDayBoxoffice()) < 0)
+                return 1;
+            else
+                return -1;
+        });
+        return list.subList(0,20);
+    }
+
+    @Override
+    public List<Long> getMoviesCodeList() {
+        List<DailyBoxoffice> distinct = this.baseMapper.selectList(new QueryWrapper<DailyBoxoffice>().select("distinct movie_code"));
+        return distinct.stream().map(DailyBoxoffice::getMovieCode).collect(Collectors.toList());
     }
 
 

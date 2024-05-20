@@ -54,7 +54,7 @@ public class DailyBoxOfficePipeline implements Pipeline {
             dailyBoxoffice.setSumBoxoffice(boxOffice.getSumSalesDesc());
             dailyBoxoffice.setSumSplitBoxoffice(boxOffice.getSumSplitSalesDesc());
             dailyBoxoffice.setReleaseDays(Integer.parseInt(boxOffice.getReleaseDays()));
-            MovieDo movieDo = movieDoService.selectByNameAndYear(dailyBoxoffice.getMovieName(), Integer.parseInt(date.substring(0, 4)));
+            MovieDo movieDo = movieDoService.selectByName(dailyBoxoffice.getMovieName());
             long movieCode ;
             if (movieDo!=null) {
                 movieCode =  movieDo.getMovieCode();

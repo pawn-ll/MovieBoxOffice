@@ -47,4 +47,14 @@ public class DailyBoxofficeController {
         return Response.success(histoygramVO);
     }
 
+    @GetMapping("/week-list")
+    public Response<List<DailyBoxofficeVO>> getWeekList(String startDate ,String endDate){
+        if (startDate ==null || endDate ==null){
+            endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+            startDate = MyDateUtils.getAddDate(endDate , MyDateUtils.YYMMDD, -7);
+        }
+        List<DailyBoxofficeVO> datesList = dailyBoxoffice.getDatesList(startDate,endDate);
+        return Response.success(datesList);
+    }
+
 }

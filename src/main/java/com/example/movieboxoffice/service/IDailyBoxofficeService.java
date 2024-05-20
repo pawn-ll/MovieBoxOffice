@@ -31,5 +31,9 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
     DailyBoxoffice latestBoxoffice(Long movieCode);
 
+    List<DailyBoxofficeVO> getDatesList(String startDate, String endDate);
+
+    List<Long> getMoviesCodeList();
+
 
 }

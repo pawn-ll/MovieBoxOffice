@@ -1,7 +1,7 @@
 package com.example.movieboxoffice.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
  * @author baomidou
  * @since 2024-05-13
  */
-@Controller
+@RestController
 @RequestMapping("/secondDo")
 public class SecondDoController {
 

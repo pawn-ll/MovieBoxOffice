@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface IMovieDoService extends IService<MovieDo> {
 
-    MovieDo selectByNameAndYear(String name ,Integer year);
+    MovieDo selectByName(String name);
 
     List<MovieDo> selectNotDO();
 
