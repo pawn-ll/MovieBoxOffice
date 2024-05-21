@@ -35,5 +35,7 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
     List<Long> getMoviesCodeList();
 
+    void verifyCode(Long oldCode,Long newCode);
+
 
 }

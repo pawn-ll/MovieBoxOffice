@@ -46,4 +46,10 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
         movieDetailVO.setSumBoxOffice(dailyBoxofficeService.latestBoxoffice(movieCode).getSumBoxoffice());
         return movieDetailVO;
     }
+
+    @Override
+    public void deleteByCode(Long movieCode) {
+        this.baseMapper.delete(new LambdaQueryWrapper<MovieDetail>()
+                .eq(MovieDetail::getMovieCode,movieCode));
+    }
 }

@@ -1,7 +1,7 @@
 package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.entity.MovieDo;
-import com.example.movieboxoffice.entity.vo.MovieBoxofficeVO;
+import com.example.movieboxoffice.entity.SecondDo;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.detail.MovieDetailDoubanService;
 import com.example.movieboxoffice.utils.MyDateUtils;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest()
@@ -28,18 +29,28 @@ class MovieBoxOfficeApplicationTests {
     private MovieDetailDoubanService doubanService;
     @Autowired
     private  MovieBoxofficeServiceImpl movieBoxofficeService;
+    @Autowired
+    private SecondDoServiceImpl secondDoService;
 
     @Test
     public void testService() {
-//        movieBoxofficeService.insertAll();
-        List<MovieBoxofficeVO> top20 = movieBoxofficeService.getTop20();
+        movieBoxofficeService.insertAll();
+//        movieDoService.verifyMovieCode();
         System.out.println();
     }
 
 
     @Test
     public void detailListSpider() throws InterruptedException {
-        List<MovieDo> movieDos = movieDoService.selectNotDO();
+        List<SecondDo> notDOList = secondDoService.getNotDOList();
+//        List<MovieDo> movieDos = movieDoService.selectNotDO();
+        List<MovieDo> movieDos =new ArrayList<>();
+        for (SecondDo secondDo : notDOList){
+            MovieDo movieDo = new MovieDo();
+            movieDo.setMovieCode(secondDo.getMovieCode());
+            movieDo.setMovieName(secondDo.getMovieName());
+            movieDos.add(movieDo);
+        }
         for (MovieDo movieDo : movieDos){
             doubanService.getMovieDetail(movieDo);
             System.out.println("--------------休息-----------------");

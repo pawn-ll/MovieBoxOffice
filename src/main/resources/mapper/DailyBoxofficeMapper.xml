@@ -2,4 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.movieboxoffice.mapper.DailyBoxofficeMapper">
 
+
+    <update id="verifyCode" parameterType="java.lang.Long" >
+        update
+            t_daily_boxoffice
+        set
+            movie_code = #{newCode}
+        where
+            movie_code = #{oldCode}
+    </update>
+
 </mapper>

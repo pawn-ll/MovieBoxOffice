@@ -1,7 +1,9 @@
 package com.example.movieboxoffice.service;
 
-import com.example.movieboxoffice.entity.SecondDo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.movieboxoffice.entity.SecondDo;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +14,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2024-05-13
  */
 public interface ISecondDoService extends IService<SecondDo> {
+
+    List<SecondDo> getNotDOList();
+
+    void deleteByCode(Long movieCode);
 
 }

@@ -157,6 +157,11 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         return distinct.stream().map(DailyBoxoffice::getMovieCode).collect(Collectors.toList());
     }
 
+    @Override
+    public void verifyCode(Long oldCode, Long newCode) {
+        this.baseMapper.verifyCode(oldCode,newCode);
+    }
+
 
     private String getReleaseDate(Long movieCode) {
         DailyBoxoffice dailyBoxoffice = this.baseMapper.selectOne(new LambdaQueryWrapper<DailyBoxoffice>()
