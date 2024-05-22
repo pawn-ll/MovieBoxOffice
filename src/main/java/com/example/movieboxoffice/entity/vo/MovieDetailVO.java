@@ -9,6 +9,8 @@ public class MovieDetailVO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private Integer id;
+
     /**
      * 电影id
      */
@@ -64,6 +66,11 @@ public class MovieDetailVO implements Serializable {
      * 海报
      */
     private String poster;
+
+    /**
+     * 海报base64
+     */
+    private String posterBase64;
 
     /**
      * 总票房

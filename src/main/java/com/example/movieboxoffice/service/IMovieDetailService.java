@@ -19,4 +19,6 @@ public interface IMovieDetailService extends IService<MovieDetail> {
     MovieDetailVO getDeatail(Long movieCode);
 
     void deleteByCode(Long movieCode);
+
+    void setPosterBase64();
 }

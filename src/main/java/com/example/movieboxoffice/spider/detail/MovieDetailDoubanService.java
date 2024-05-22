@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.movieboxoffice.entity.DoubanSuggest;
 import com.example.movieboxoffice.entity.MovieDetail;
-import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.entity.SecondDo;
 import com.example.movieboxoffice.enums.MovieDetailLength;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
@@ -39,36 +38,42 @@ public class MovieDetailDoubanService {
     private SecondDoServiceImpl secondDoService;
 
 
-    public void getMovieDetail(MovieDo movieDo) {
+    public void getMovieDetail(String movieName ,Long movieCode , boolean second) {
         try {
-            DoubanSuggest suggest = movieDetail(movieDo);
+            DoubanSuggest suggest = movieDetail(movieName,movieCode);
             if (suggest !=null) {
                 getSuggestMovieDetail(suggest.getUrl(), suggest.getImg());
+                if (second)
+                    secondDoService.doMovie(movieCode);
             }else {
                 System.out.println("------------"+movieName+" 未匹配成功");
+                if (!second ) {
                     SecondDo secondDo = new SecondDo();
                     secondDo.setMovieCode(movieCode);
                     secondDo.setMovieName(movieName);
                     secondDoService.save(secondDo);
                     movieDoService.doMovie(movieCode);
+                }
 
             }
         }catch (Exception e){
             System.out.println(movieName+"  爬取失败");
             System.out.println(e);
-            SecondDo secondDo = new SecondDo();
-            secondDo.setMovieCode(movieCode);
-            secondDo.setMovieName(movieName);
-            secondDoService.save(secondDo);
-            movieDoService.doMovie(movieCode);
+            if (!second ) {
+                SecondDo secondDo = new SecondDo();
+                secondDo.setMovieCode(movieCode);
+                secondDo.setMovieName(movieName);
+                secondDoService.save(secondDo);
+                movieDoService.doMovie(movieCode);
+            }
         }
 
     }
 
-    private DoubanSuggest  movieDetail(MovieDo movieDo) throws IOException {
-        movieCode = movieDo.getMovieCode();
-        movieName = movieDo.getMovieName();
-        String requestUrl = BASE_URL + (encodeQuery(movieDo.getMovieName()));
+    private DoubanSuggest  movieDetail(String movieName ,Long movieCode) throws IOException {
+        this.movieCode = movieCode;
+        this.movieName = movieName;
+        String requestUrl = BASE_URL + (encodeQuery(movieName));
         DoubanSuggest movie = null;
         BufferedReader reader = null;
         StringBuilder response = null;
@@ -89,7 +94,7 @@ public class MovieDetailDoubanService {
                 // 解析JSON响应
                 JSONArray subjects = JSON.parseArray(response.toString());
                 if (subjects.size() < 1) return null;
-                movie = getDoubanSuggest(subjects,movieDo.getMovieName());
+                movie = getDoubanSuggest(subjects,movieName);
                 System.out.println(movie);
             } else {
                 System.err.println("请求失败，状态码：" + connection.getResponseCode());

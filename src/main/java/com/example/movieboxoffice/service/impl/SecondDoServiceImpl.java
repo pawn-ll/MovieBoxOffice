@@ -1,10 +1,11 @@
 package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.SecondDo;
 import com.example.movieboxoffice.mapper.SecondDoMapper;
 import com.example.movieboxoffice.service.ISecondDoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,15 +23,29 @@ public class SecondDoServiceImpl extends ServiceImpl<SecondDoMapper, SecondDo> i
 
     @Override
     public List<SecondDo> getNotDOList() {
-        return this.baseMapper.selectList(new LambdaQueryWrapper<SecondDo>()
-                .eq(SecondDo::getIsDo,0)
-                .orderByDesc(SecondDo::getId)
-        );
+        Page<SecondDo> page = this.baseMapper.selectPage(new Page<>(0, 10), new LambdaQueryWrapper<SecondDo>()
+                .eq(SecondDo::getIsDo, 1)
+                .gt(SecondDo::getId,36)
+                .orderByAsc(SecondDo::getId));
+        int id = page.getRecords().get(0).getId();
+        Page<SecondDo> secondDoPage = this.baseMapper.selectPage(new Page<>(0, 20), new LambdaQueryWrapper<SecondDo>()
+                .eq(SecondDo::getIsDo, 0)
+                .lt(SecondDo::getId,id)
+                .orderByDesc(SecondDo::getId));
+        return secondDoPage.getRecords();
     }
 
     @Override
     public void deleteByCode(Long movieCode) {
         this.baseMapper.delete(new LambdaQueryWrapper<SecondDo>()
                 .eq(SecondDo::getMovieCode,movieCode));
+    }
+
+    @Override
+    public void doMovie(Long movieCode) {
+        SecondDo secondDo = this.baseMapper.selectOne(new LambdaQueryWrapper<SecondDo>()
+                .eq(SecondDo::getMovieCode, movieCode));
+        secondDo.setIsDo(1);
+        baseMapper.updateById(secondDo);
     }
 }

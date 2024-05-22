@@ -3,6 +3,7 @@ package com.example.movieboxoffice.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Date;
  * @since 2024-05-10
  */
 @TableName("t_movie_detail")
+@Data
 public class MovieDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,13 +53,6 @@ public class MovieDetail implements Serializable {
      */
     private String actor;
 
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
 
     /**
      * 上映日期
@@ -90,113 +85,14 @@ public class MovieDetail implements Serializable {
     private String poster;
 
     /**
+     * 海报base64
+     */
+    private String posterBase64;
+
+    /**
      * 创建时间
      */
     private Date createTime;
 
-    public MovieDetail() {
-    }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public Long getMovieCode() {
-        return movieCode;
-    }
-
-    public void setMovieCode(Long movieCode) {
-        this.movieCode = movieCode;
-    }
-    public String getMovieName() {
-        return movieName;
-    }
-
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
-    }
-    public String getDirector() {
-        return director;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
-    }
-    public String getActor() {
-        return actor;
-    }
-
-    public void setActor(String actor) {
-        this.actor = actor;
-    }
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-    public String getLength() {
-        return length;
-    }
-
-    public void setLength(String length) {
-        this.length = length;
-    }
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-    public String getIntroduction() {
-        return introduction;
-    }
-
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction;
-    }
-    public String getPoster() {
-        return poster;
-    }
-
-    public void setPoster(String poster) {
-        this.poster = poster;
-    }
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getScripter() {
-        return scripter;
-    }
-
-    public void setScripter(String scripter) {
-        this.scripter = scripter;
-    }
-
-    @Override
-    public String toString() {
-        return "MovieDetail{" +
-            "id=" + id +
-            ", movieCode=" + movieCode +
-            ", movieName=" + movieName +
-            ", director=" + director +
-            ", actor=" + actor +
-            ", type=" + type +
-            ", length=" + length +
-            ", area=" + area +
-            ", introduction=" + introduction +
-            ", poster=" + poster +
-            ", createTime=" + createTime +
-        "}";
-    }
 }

@@ -19,4 +19,6 @@ public interface ISecondDoService extends IService<SecondDo> {
 
     void deleteByCode(Long movieCode);
 
+    void doMovie(Long movieCode);
+
 }

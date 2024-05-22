@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest()
@@ -34,8 +33,10 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void testService() {
-        movieBoxofficeService.insertAll();
+//        movieBoxofficeService.insertAll();
 //        movieDoService.verifyMovieCode();
+
+        movieDetailService.setPosterBase64();
         System.out.println();
     }
 
@@ -44,15 +45,9 @@ class MovieBoxOfficeApplicationTests {
     public void detailListSpider() throws InterruptedException {
         List<SecondDo> notDOList = secondDoService.getNotDOList();
 //        List<MovieDo> movieDos = movieDoService.selectNotDO();
-        List<MovieDo> movieDos =new ArrayList<>();
-        for (SecondDo secondDo : notDOList){
-            MovieDo movieDo = new MovieDo();
-            movieDo.setMovieCode(secondDo.getMovieCode());
-            movieDo.setMovieName(secondDo.getMovieName());
-            movieDos.add(movieDo);
-        }
-        for (MovieDo movieDo : movieDos){
-            doubanService.getMovieDetail(movieDo);
+
+        for (SecondDo movieDo : notDOList){
+            doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),true);
             System.out.println("--------------休息-----------------");
             Thread.sleep(1000*6);
         }
@@ -65,7 +60,7 @@ class MovieBoxOfficeApplicationTests {
             return;
         }
         for (MovieDo movieDo : movieDos){
-            doubanService.getMovieDetail(movieDo);
+            doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),false);
             System.out.println("--------------休息-----------------");
             Thread.sleep(1000*6);
         }
