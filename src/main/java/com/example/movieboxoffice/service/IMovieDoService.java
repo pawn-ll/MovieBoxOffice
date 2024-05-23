@@ -21,8 +21,6 @@ public interface IMovieDoService extends IService<MovieDo> {
 
     void doMovie(Long movieCode);
 
-    List<MovieDo> selectTodayNotDO();
-
     void verifyMovieCode();
 
 }

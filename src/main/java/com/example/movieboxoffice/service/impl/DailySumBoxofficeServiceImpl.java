@@ -1,15 +1,19 @@
 package com.example.movieboxoffice.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
 import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailySumBoxofficeMapper;
 import com.example.movieboxoffice.service.IDailySumBoxofficeService;
+import com.example.movieboxoffice.service.RedisService;
+import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +31,9 @@ import java.util.stream.Collectors;
 @Service
 public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeMapper, DailySumBoxoffice> implements IDailySumBoxofficeService {
 
+    @Autowired
+    private RedisService redisService;
+
     @Override
     public void deleteByDates(String startDate, String endDate) {
         LambdaQueryWrapper<DailySumBoxoffice> wrapper = new LambdaQueryWrapper<DailySumBoxoffice>()
@@ -38,9 +45,16 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
 
     @Override
     public DailySumBoxofficeVO today() {
-        DailySumBoxoffice dailySumBoxoffice = new DailySumBoxoffice();
-        dailySumBoxoffice.setDate(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD));
-        dailySumBoxoffice = this.baseMapper.selectOne(new QueryWrapper<DailySumBoxoffice>(dailySumBoxoffice));
+        DailySumBoxoffice dailySumBoxoffice = null;
+        String s = redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE);
+        if (!StringUtils.isEmpty(s)){
+            dailySumBoxoffice = JSONObject.parseObject(s, DailySumBoxoffice.class);
+        }else {
+            String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+            dailySumBoxoffice = this.baseMapper.selectOne(new LambdaQueryWrapper<DailySumBoxoffice>()
+                    .eq(DailySumBoxoffice::getDate, date));
+            redisService.set(MyConstant.TODAY_DAILY_SUMBOXOFFICE, JSONObject.toJSONString(dailySumBoxoffice));
+        }
         DailySumBoxofficeVO sumBoxofficeVO = new DailySumBoxofficeVO();
         BeanUtils.copyProperties(dailySumBoxoffice, sumBoxofficeVO);
         return sumBoxofficeVO;

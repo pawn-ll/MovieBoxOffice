@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.mapper.MovieDoMapper;
 import com.example.movieboxoffice.service.IMovieDoService;
-import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -34,10 +33,10 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
 
     @Override
     public MovieDo selectByName(String name) {
-        MovieDo movieDo = new MovieDo();
-        movieDo.setMovieName(name);
-        List<MovieDo> movieDos = this.baseMapper.selectList(new QueryWrapper<MovieDo>(movieDo));
-        if (CollectionUtils.isEmpty(movieDos))
+
+        List<MovieDo> movieDos = this.baseMapper.selectList(new LambdaQueryWrapper<MovieDo>()
+                .eq(MovieDo::getMovieName, name));
+        if (!CollectionUtils.isEmpty(movieDos))
             return movieDos.get(0);
         else
             return null;
@@ -46,10 +45,10 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
 
     @Override
     public List<MovieDo> selectNotDO() {
-        MovieDo movieDo = new MovieDo();
-        movieDo.setIsDo(0);
         Page<MovieDo> page = new Page<>(1,20);
-        return baseMapper.selectPage(page, new QueryWrapper<MovieDo>(movieDo)).getRecords();
+        return baseMapper.selectPage(page, new LambdaQueryWrapper<MovieDo>()
+                .eq(MovieDo::getIsDo,0))
+                .getRecords();
     }
 
     @Override
@@ -61,13 +60,6 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
         }
     }
 
-    @Override
-    public List<MovieDo> selectTodayNotDO() {
-        MovieDo movieDo = new MovieDo();
-        movieDo.setIsDo(0);
-        movieDo.setMovieDate(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD));
-        return baseMapper.selectList(new QueryWrapper<MovieDo>(movieDo));
-    }
 
     @Override
     public void verifyMovieCode() {

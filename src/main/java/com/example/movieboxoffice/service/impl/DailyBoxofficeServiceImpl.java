@@ -1,5 +1,6 @@
 package com.example.movieboxoffice.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -9,9 +10,12 @@ import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
 import com.example.movieboxoffice.service.IDailyBoxofficeService;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
+import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,8 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     private DailyBoxOfficeSpider dailyBoxOfficeSpider;
     @Autowired
     private DailySumBoxofficeServiceImpl dailySumBoxofficeService;
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public void todaySpiderCrawl() {
@@ -65,8 +71,15 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
 
     @Override
     public List<DailyBoxofficeVO> today() {
-        List<DailyBoxoffice> dailyBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+        List<DailyBoxoffice> dailyBoxoffices = null;
+        String s = redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST);
+        if (StringUtils.isNotEmpty(s)){
+            dailyBoxoffices = JSONArray.parseArray(s, DailyBoxoffice.class);
+        }else {
+            dailyBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
                 .eq(DailyBoxoffice::getRecordDate, MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD)));
+            redisService.set(MyConstant.TODAY_DAILY_BOXOFFICELIST,JSONArray.toJSONString(dailyBoxoffices));
+        }
         List<DailyBoxofficeVO> list = new ArrayList<>();
         if (dailyBoxoffices.size() > 0){
             for (DailyBoxoffice dailyBoxoffice : dailyBoxoffices) {

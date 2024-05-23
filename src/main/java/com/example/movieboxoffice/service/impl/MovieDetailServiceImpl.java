@@ -46,9 +46,8 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
     @Override
     public MovieDetailVO getDeatail(Long movieCode) {
-        MovieDetail movieDetail = new MovieDetail();
-        movieDetail.setMovieCode(movieCode);
-        movieDetail = this.getOne(new LambdaQueryWrapper<MovieDetail>(movieDetail));
+        MovieDetail movieDetail = this.getOne(new LambdaQueryWrapper<MovieDetail>()
+                .eq(MovieDetail::getMovieCode,movieCode));
         MovieDetailVO movieDetailVO = new MovieDetailVO();
         BeanUtils.copyProperties(movieDetail,movieDetailVO);
         movieDetailVO.setSumBoxOffice(dailyBoxofficeService.latestBoxoffice(movieCode).getSumBoxoffice());
