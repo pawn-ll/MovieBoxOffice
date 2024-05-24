@@ -1,14 +1,21 @@
 package com.example.movieboxoffice.task;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.example.movieboxoffice.entity.DailyBoxoffice;
+import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.entity.SecondDo;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
 import com.example.movieboxoffice.spider.detail.MovieDetailDoubanService;
+import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,16 +44,32 @@ public class SpiderTask {
     private MovieDetailDoubanService doubanService;
     @Autowired
     private MovieDetailServiceImpl movieDetailService;
+    @Autowired
+    private RedisService redisService;
 
     public void todaySpiderCrawl() {
         /*
         引入redis用缓存60秒更新一次
-        更新数据库1小时一次
          */
-        String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
-        dailyBoxofficeService.deleteByDates(date,date);
-        dailySumBoxofficeService.deleteByDates(date,date);
         dailyBoxOfficeSpider.getDefaultSpider().run();
+    }
+
+//    更新数据库1小时一次
+    @Transactional(rollbackFor =Exception.class)
+    public void saveDailyData() {
+        String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+        List<DailyBoxoffice> dailyBoxoffices = JSONArray.parseArray(redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST), DailyBoxoffice.class);
+        if (dailyBoxoffices.size() > 0){
+            dailyBoxofficeService.deleteByDates(date,date);
+            for (DailyBoxoffice dailyBoxoffice : dailyBoxoffices) {
+                dailyBoxofficeService.save(dailyBoxoffice);
+            }
+        }
+        DailySumBoxoffice dailySumBoxoffice = JSONObject.parseObject(redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE), DailySumBoxoffice.class);
+        if (dailySumBoxoffice != null){
+            dailySumBoxofficeService.deleteByDates(date,date);
+            dailySumBoxofficeService.save(dailySumBoxoffice);
+        }
     }
 
 

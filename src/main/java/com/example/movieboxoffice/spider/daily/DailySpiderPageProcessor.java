@@ -32,34 +32,6 @@ public class DailySpiderPageProcessor implements PageProcessor {
         int index = url.indexOf("date=");
         String date = url.substring(index +5, index + 15);
         page.putField("date",date);
-//        List<BoxOfficeWeb> list = JSON.parseArray((jsonObject.get("list")).toString(), BoxOfficeWeb.class);
-//        DailyBoxoffice dailyBoxoffice = new DailyBoxoffice();
-//        dailyBoxoffice.setRecordDate(MyDateUtils.parseDate(date,MyDateUtils.YYMMDD));
-//        for (BoxOfficeWeb boxOffice :list ){
-//            dailyBoxoffice.setMovieName(boxOffice.getName());
-//            dailyBoxoffice.setSumBoxoffice(boxOffice.getSumSalesDesc());
-//            dailyBoxoffice.setSumSplitBoxoffice(boxOffice.getSumSplitSalesDesc());
-//            dailyBoxoffice.setReleaseDays(Integer.parseInt(boxOffice.getReleaseDays()));
-//            dailyBoxoffice.setDayBoxoffice(new BigDecimal(boxOffice.getSalesInWanDesc()));
-//            dailyBoxoffice.setDaySplitBoxoffice(new BigDecimal(boxOffice.getSplitSalesInWanDesc()));
-//            dailyBoxoffice.setDayBoxofficeRate(boxOffice.getSalesRateDesc());
-//            dailyBoxoffice.setDaySplitBoxofficeRate(boxOffice.getSplitSalesRateDesc());
-//            dailyBoxoffice.setDayArrangeRate(boxOffice.getSessionRateDesc());
-//            dailyBoxoffice.setDaySeatRate(boxOffice.getSeatRateDesc());
-//
-//            dailyBoxofficeMapper.insert(dailyBoxoffice);
-//        }
-
-//        JSONObject nationalSales = (JSONObject)jsonObject.get("nationalSales");
-//        JSONObject salesDesc = (JSONObject)nationalSales.get("salesDesc");
-//        JSONObject splitSalesDesc = (JSONObject)nationalSales.get("splitSalesDesc");
-//        String sales = salesDesc.get("value").toString()+salesDesc.get("unit").toString();
-//        String splitSales = splitSalesDesc.get("value").toString()+splitSalesDesc.get("unit").toString();
-//        DailySumBoxoffice dailySumBoxoffice = new DailySumBoxoffice();
-//        dailySumBoxoffice.setSumBoxoffice(sales);
-//        dailySumBoxoffice.setSumSplitBoxoffice(splitSales);
-//        dailySumBoxoffice.setDate(MyDateUtils.parseDate(date,MyDateUtils.YYMMDD));
-//        dailySumBoxofficeMapper.insert(dailySumBoxoffice);
 
 
     }

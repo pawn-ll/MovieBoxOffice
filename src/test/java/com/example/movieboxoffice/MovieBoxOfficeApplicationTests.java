@@ -48,7 +48,7 @@ class MovieBoxOfficeApplicationTests {
     public void dateSpider(){
         long startTime = System.currentTimeMillis();
         spiderTask.todaySpiderCrawl();
-//        dailyBoxofficeService.spiderCrawl("2024-05-10");
+        spiderTask.saveDailyData();
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("耗时"+duration + "ms" );

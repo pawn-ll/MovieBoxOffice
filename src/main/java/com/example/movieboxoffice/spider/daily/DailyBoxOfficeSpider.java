@@ -12,6 +12,8 @@ public class DailyBoxOfficeSpider {
     private DailySpiderPageProcessor spiderPageProcessor;
     @Autowired
     private DailyBoxOfficePipeline boxOfficePipeline;
+    @Autowired
+    private DefaultDailyBoxOfficePipeline defaultDailyBoxOfficePipeline;
 
 
     private static String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
@@ -20,7 +22,7 @@ public class DailyBoxOfficeSpider {
 
 
     public  Spider getDefaultSpider(){
-        return Spider.create(spiderPageProcessor).addPipeline(boxOfficePipeline).addUrl(url).thread(3);
+        return Spider.create(spiderPageProcessor).addPipeline(defaultDailyBoxOfficePipeline).addUrl(url).thread(3);
     }
 
     public Spider getDateSpider(String dates){

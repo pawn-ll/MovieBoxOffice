@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface IMovieDoService extends IService<MovieDo> {
 
-    MovieDo selectByName(String name);
+    List<MovieDo> selectExistList();
 
     List<MovieDo> selectNotDO();
 

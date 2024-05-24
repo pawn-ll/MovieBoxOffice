@@ -9,7 +9,6 @@ import com.example.movieboxoffice.mapper.MovieDoMapper;
 import com.example.movieboxoffice.service.IMovieDoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -32,15 +31,9 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
     private DailyBoxofficeServiceImpl dailyBoxofficeService;
 
     @Override
-    public MovieDo selectByName(String name) {
+    public List<MovieDo> selectExistList() {
 
-        List<MovieDo> movieDos = this.baseMapper.selectList(new LambdaQueryWrapper<MovieDo>()
-                .eq(MovieDo::getMovieName, name));
-        if (!CollectionUtils.isEmpty(movieDos))
-            return movieDos.get(0);
-        else
-            return null;
-
+        return this.baseMapper.selectList(new LambdaQueryWrapper<>());
     }
 
     @Override

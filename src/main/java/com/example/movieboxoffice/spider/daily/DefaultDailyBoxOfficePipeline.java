@@ -1,14 +1,15 @@
 package com.example.movieboxoffice.spider.daily;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.movieboxoffice.entity.BoxOfficeWeb;
 import com.example.movieboxoffice.entity.DailyBoxoffice;
 import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.MovieDo;
-import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
-import com.example.movieboxoffice.mapper.DailySumBoxofficeMapper;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
+import com.example.movieboxoffice.utils.MyConstant;
 import com.github.yitter.idgen.YitIdHelper;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -19,18 +20,17 @@ import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
 @Log4j2
-public class DailyBoxOfficePipeline implements Pipeline {
+public class DefaultDailyBoxOfficePipeline implements Pipeline {
 
     @Autowired
-    private DailyBoxofficeMapper dailyBoxofficeMapper;
-    @Autowired
-    private DailySumBoxofficeMapper dailySumBoxofficeMapper;
+    private RedisService redisService;
     @Autowired
     private MovieDoServiceImpl movieDoService;
 
@@ -43,13 +43,14 @@ public class DailyBoxOfficePipeline implements Pipeline {
 
         List<BoxOfficeWeb> list = JSON.parseArray(str, BoxOfficeWeb.class);
         log.error("------------size:"+list.size());
+        List<DailyBoxoffice> dailyBoxoffices = new ArrayList<>();
         List<MovieDo> existsMovies = movieDoService.selectExistList();
         Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieDo::getMovieName, MovieDo::getMovieCode));
         DailyBoxoffice dailyBoxoffice = null;
-
         for (BoxOfficeWeb boxOffice :list ){
-            dailyBoxoffice.setId(null);
+            dailyBoxoffice = new DailyBoxoffice();
             dailyBoxoffice.setRecordDate(date);
+            dailyBoxoffice.setId(null);
             dailyBoxoffice.setDayBoxoffice(parseBigDecimal(boxOffice.getSalesInWanDesc()));
             if (dailyBoxoffice.getDayBoxoffice().equals(BigDecimal.ZERO)) break;
             dailyBoxoffice.setDaySplitBoxoffice(parseBigDecimal(boxOffice.getSplitSalesInWanDesc()));
@@ -57,7 +58,6 @@ public class DailyBoxOfficePipeline implements Pipeline {
             dailyBoxoffice.setSumBoxoffice(boxOffice.getSumSalesDesc());
             dailyBoxoffice.setSumSplitBoxoffice(boxOffice.getSumSplitSalesDesc());
             dailyBoxoffice.setReleaseDays(Integer.parseInt(boxOffice.getReleaseDays()));
-
             long movieCode ;
             if (map.get(dailyBoxoffice.getMovieName())!=null) {
                 movieCode =  map.get(dailyBoxoffice.getMovieName());
@@ -75,10 +75,10 @@ public class DailyBoxOfficePipeline implements Pipeline {
             dailyBoxoffice.setDaySplitBoxofficeRate(boxOffice.getSplitSalesRateDesc());
             dailyBoxoffice.setDayArrangeRate(boxOffice.getSessionRateDesc());
             dailyBoxoffice.setDaySeatRate(boxOffice.getSeatRateDesc());
-
-            dailyBoxofficeMapper.insert(dailyBoxoffice);
+            dailyBoxoffices.add(dailyBoxoffice);
 
         }
+        redisService.set(MyConstant.TODAY_DAILY_BOXOFFICELIST, JSONArray.toJSONString(dailyBoxoffices));
 
         JSONObject nationalSales = resultItems.get("nationalSales");
         JSONObject salesDesc = (JSONObject)nationalSales.get("salesDesc");
@@ -89,7 +89,7 @@ public class DailyBoxOfficePipeline implements Pipeline {
         dailySumBoxoffice.setSumBoxoffice(sales);
         dailySumBoxoffice.setSumSplitBoxoffice(splitSales);
         dailySumBoxoffice.setDate(date);
-        dailySumBoxofficeMapper.insert(dailySumBoxoffice);
+        redisService.set(MyConstant.TODAY_DAILY_SUMBOXOFFICE, JSONObject.toJSONString(dailySumBoxoffice));
 
     }
 
