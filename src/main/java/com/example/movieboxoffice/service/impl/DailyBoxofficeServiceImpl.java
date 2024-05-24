@@ -11,7 +11,6 @@ import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
 import com.example.movieboxoffice.service.IDailyBoxofficeService;
 import com.example.movieboxoffice.service.RedisService;
-import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
 import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.SneakyThrows;
@@ -37,29 +36,11 @@ import java.util.stream.Collectors;
 @Service
 public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper, DailyBoxoffice> implements IDailyBoxofficeService {
 
-    @Autowired
-    private DailyBoxOfficeSpider dailyBoxOfficeSpider;
-    @Autowired
-    private DailySumBoxofficeServiceImpl dailySumBoxofficeService;
+
     @Autowired
     private RedisService redisService;
 
-    @Override
-    public void todaySpiderCrawl() {
-        /*
-        引入redis用缓存5秒更新一次
-        更新数据库1小时一次
-         */
-        String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
-        deleteByDates(date,date);
-        dailySumBoxofficeService.deleteByDates(date,date);
-        dailyBoxOfficeSpider.getDefaultSpider().run();
-    }
 
-    @Override
-    public void spiderCrawl(String date){
-        dailyBoxOfficeSpider.getDateSpider(date).run();
-    }
 
     @Override
     public void deleteByDates(String startDate, String endDate) {

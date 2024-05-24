@@ -17,9 +17,6 @@ import java.util.List;
  */
 public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
-    void todaySpiderCrawl();
-
-    void spiderCrawl(String date);
 
     void deleteByDates(String startDate , String endDate);
 

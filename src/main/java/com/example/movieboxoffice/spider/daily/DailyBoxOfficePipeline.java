@@ -8,12 +8,11 @@ import com.example.movieboxoffice.entity.DailySumBoxoffice;
 import com.example.movieboxoffice.entity.MovieDo;
 import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
 import com.example.movieboxoffice.mapper.DailySumBoxofficeMapper;
-import com.example.movieboxoffice.service.IMovieDoService;
+import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
 import com.github.yitter.idgen.YitIdHelper;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.ResultItems;
 import us.codecraft.webmagic.Task;
@@ -31,8 +30,7 @@ public class DailyBoxOfficePipeline implements Pipeline {
     @Autowired
     private DailySumBoxofficeMapper dailySumBoxofficeMapper;
     @Autowired
-    @Qualifier("movieDoServiceImpl")
-    private IMovieDoService movieDoService;
+    private MovieDoServiceImpl movieDoService;
 
 
     @SneakyThrows

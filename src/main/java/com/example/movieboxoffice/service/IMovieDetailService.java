@@ -14,7 +14,6 @@ import com.example.movieboxoffice.entity.vo.MovieDetailVO;
  */
 public interface IMovieDetailService extends IService<MovieDetail> {
 
-    void crawlDetail() ;
 
     MovieDetailVO getDeatail(Long movieCode);
 

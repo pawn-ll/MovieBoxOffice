@@ -27,22 +27,12 @@ import java.util.List;
 @Service
 public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, MovieDetail> implements IMovieDetailService {
 
-    @Autowired
-    private MovieDoServiceImpl movieDoService;
+
     @Autowired
     private DailyBoxofficeServiceImpl dailyBoxofficeService;
 
     private final static String PREFIX =  "data:image/jpeg;base64,";
 
-
-    @Override
-    public void crawlDetail()  {
-//        List<MovieDo> movieDos = movieDoService.selectNotDO();
-//        for (MovieDo movieDo : movieDos){
-//        }
-
-
-    }
 
     @Override
     public MovieDetailVO getDeatail(Long movieCode) {
