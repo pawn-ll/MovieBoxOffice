@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,6 +46,8 @@ public class MovieDetailDoubanService {
                 getSuggestMovieDetail(suggest.getUrl(), suggest.getImg());
                 if (second)
                     secondDoService.doMovie(movieCode);
+                else
+                    movieDoService.doMovie(movieCode);
             }else {
                 System.out.println("------------"+movieName+" 未匹配成功");
                 if (!second ) {
@@ -140,21 +143,20 @@ public class MovieDetailDoubanService {
             List<String> persons = html.xpath("//*[@id='info']/span/span[@class='attrs']").all();
             List<String> directors = new Html(persons.get(0)).xpath("//a/text()").all();
             String director = getValidString(directors, MovieDetailLength.DIRECTOR.getLength());
-            String scripter = "";
+            String scripter = null;
             if (persons.size()>2) {
                 List<String> scripters = new Html(persons.get(1)).xpath("//a/text()").all();
                 scripter = getValidString(scripters, MovieDetailLength.SCIPTER.getLength());
             }
-            String actor = "";
-            List<String> actors = null ;
+            String actor = null;
+            List<String> actors = new ArrayList<>();
             if (persons.size()==2) {
                 actors = new Html(persons.get(1)).xpath("//a/text()").all();
 
             }else if (persons.size()>2){
                 actors = new Html(persons.get(2)).xpath("//a/text()").all();
             }
-            if (actors.size()>0)
-                actor = getValidString(actors, MovieDetailLength.ACTOR.getLength());
+            actor = getValidString(actors, MovieDetailLength.ACTOR.getLength());
 
             List<String> types = html.xpath("//*[@id='info']/span[@property='v:genre']/text()").all();
             String type = getValidString(types, MovieDetailLength.TYPE.getLength());
@@ -168,23 +170,28 @@ public class MovieDetailDoubanService {
             MovieDetail movieDetail = new MovieDetail();
             movieDetail.setMovieName(movieName);
             movieDetail.setDirector(director.trim());
-            movieDetail.setScripter(scripter.trim());
+            if (scripter != null) {
+                movieDetail.setScripter(scripter.trim());
+            }
             movieDetail.setActor(actor.trim());
             movieDetail.setReleaseDate(releaseDate.trim());
             movieDetail.setType(type.trim());
-            movieDetail.setArea(area.trim());
+            if (area != null) {
+                movieDetail.setArea(area.trim());
+            }
             if (time != null) {
                 movieDetail.setLength(time.trim());
             }
-            if (introduction.length() > 1024){
-                movieDetail.setIntroduction(introduction.substring(0,1024));
-            }else {
-                movieDetail.setIntroduction(introduction);
+            if (introduction != null) {
+                if (introduction.length() > 1024) {
+                    movieDetail.setIntroduction(introduction.substring(0, 1024));
+                } else {
+                    movieDetail.setIntroduction(introduction);
+                }
             }
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
             movieDetailService.save(movieDetail);
-            movieDoService.doMovie(movieCode);
         }
 
     }
@@ -214,6 +221,9 @@ public class MovieDetailDoubanService {
 
     private String getValidString(List<String> list,Integer length){
         StringBuilder sb = new StringBuilder();
+        if (list.size() == 0){
+            return "";
+        }
         for (String s : list) {
             if ((sb.length()+s.length()) > length)
                 break;

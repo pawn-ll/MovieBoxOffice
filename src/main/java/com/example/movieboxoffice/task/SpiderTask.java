@@ -90,7 +90,7 @@ public class SpiderTask {
         for (MovieDo movieDo : movieDos){
             doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),false);
             System.out.println("--------------休息-----------------");
-            Thread.sleep(1000*6);
+            Thread.sleep(1000*5);
         }
     }
 
@@ -102,13 +102,13 @@ public class SpiderTask {
      * @throws InterruptedException 如果线程在睡眠时被中断，则会抛出此异常。
      */
     public void detailSpiderSecondCrawl() throws InterruptedException {
-
+//        doubanService.getMovieDetail("海安舅舅",545476852854853L,true);
         List<SecondDo> notDOList = secondDoService.getNotDOList();
 
         for (SecondDo movieDo : notDOList){
             doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),true);
             System.out.println("--------------休息-----------------");
-            Thread.sleep(1000*6);
+            Thread.sleep(1000*5);
         }
 
     }

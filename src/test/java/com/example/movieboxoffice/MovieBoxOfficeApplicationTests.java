@@ -16,7 +16,6 @@ class MovieBoxOfficeApplicationTests {
     @Test
     public void testService() {
 //        movieBoxofficeService.insertAll();
-//        movieDoService.verifyMovieCode();
         spiderTask.setPosterBase64();
 //        redisService.set("1","haha");
 //        Object o = redisService.get("1");
@@ -48,7 +47,7 @@ class MovieBoxOfficeApplicationTests {
     public void dateSpider(){
         long startTime = System.currentTimeMillis();
         spiderTask.todaySpiderCrawl();
-        spiderTask.saveDailyData();
+//        spiderTask.saveDailyData();
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("耗时"+duration + "ms" );

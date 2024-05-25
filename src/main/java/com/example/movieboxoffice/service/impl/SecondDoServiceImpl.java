@@ -25,12 +25,14 @@ public class SecondDoServiceImpl extends ServiceImpl<SecondDoMapper, SecondDo> i
     public List<SecondDo> getNotDOList() {
         Page<SecondDo> page = this.baseMapper.selectPage(new Page<>(0, 10), new LambdaQueryWrapper<SecondDo>()
                 .eq(SecondDo::getIsDo, 1)
-                .gt(SecondDo::getId,36)
                 .orderByAsc(SecondDo::getId));
-        int id = page.getRecords().get(0).getId();
-        Page<SecondDo> secondDoPage = this.baseMapper.selectPage(new Page<>(0, 20), new LambdaQueryWrapper<SecondDo>()
+        Integer id = null;
+        if (page.getRecords().size()>0){
+            id = page.getRecords().get(0).getId();
+        }
+        Page<SecondDo> secondDoPage = this.baseMapper.selectPage(new Page<>(0, 70), new LambdaQueryWrapper<SecondDo>()
                 .eq(SecondDo::getIsDo, 0)
-                .lt(SecondDo::getId,id)
+                .lt(id != null,SecondDo::getId,id)
                 .orderByDesc(SecondDo::getId));
         return secondDoPage.getRecords();
     }

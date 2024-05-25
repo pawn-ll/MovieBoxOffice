@@ -38,7 +38,7 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
 
     @Override
     public List<MovieDo> selectNotDO() {
-        Page<MovieDo> page = new Page<>(1,20);
+        Page<MovieDo> page = new Page<>(1,70);
         return baseMapper.selectPage(page, new LambdaQueryWrapper<MovieDo>()
                 .eq(MovieDo::getIsDo,0))
                 .getRecords();
