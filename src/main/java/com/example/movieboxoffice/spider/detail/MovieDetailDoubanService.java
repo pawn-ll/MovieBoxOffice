@@ -141,7 +141,10 @@ public class MovieDetailDoubanService {
         }
         if (html != null) {
             List<String> persons = html.xpath("//*[@id='info']/span/span[@class='attrs']").all();
-            List<String> directors = new Html(persons.get(0)).xpath("//a/text()").all();
+            List<String> directors = new ArrayList<>();
+            if (persons.size()>0) {
+                directors = new Html(persons.get(0)).xpath("//a/text()").all();
+            }
             String director = getValidString(directors, MovieDetailLength.DIRECTOR.getLength());
             String scripter = null;
             if (persons.size()>2) {

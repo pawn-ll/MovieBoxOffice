@@ -46,7 +46,7 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
     @Override
     public DailySumBoxofficeVO today() {
         DailySumBoxoffice dailySumBoxoffice = null;
-        String s = redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE);
+        String s = (String)redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE);
         if (!StringUtils.isEmpty(s)){
             dailySumBoxoffice = JSONObject.parseObject(s, DailySumBoxoffice.class);
         }else {

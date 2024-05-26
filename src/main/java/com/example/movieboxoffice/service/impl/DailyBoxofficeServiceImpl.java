@@ -53,7 +53,7 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     @Override
     public List<DailyBoxofficeVO> today() {
         List<DailyBoxoffice> dailyBoxoffices = null;
-        String s = redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST);
+        String s = (String) redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST);
         if (StringUtils.isNotEmpty(s)){
             dailyBoxoffices = JSONArray.parseArray(s, DailyBoxoffice.class);
         }else {

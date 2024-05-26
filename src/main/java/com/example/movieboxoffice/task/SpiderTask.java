@@ -58,14 +58,14 @@ public class SpiderTask {
     @Transactional(rollbackFor =Exception.class)
     public void saveDailyData() {
         String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
-        List<DailyBoxoffice> dailyBoxoffices = JSONArray.parseArray(redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST), DailyBoxoffice.class);
+        List<DailyBoxoffice> dailyBoxoffices = JSONArray.parseArray((String)redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST), DailyBoxoffice.class);
         if (dailyBoxoffices.size() > 0){
             dailyBoxofficeService.deleteByDates(date,date);
             for (DailyBoxoffice dailyBoxoffice : dailyBoxoffices) {
                 dailyBoxofficeService.save(dailyBoxoffice);
             }
         }
-        DailySumBoxoffice dailySumBoxoffice = JSONObject.parseObject(redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE), DailySumBoxoffice.class);
+        DailySumBoxoffice dailySumBoxoffice = JSONObject.parseObject((String) redisService.get(MyConstant.TODAY_DAILY_SUMBOXOFFICE), DailySumBoxoffice.class);
         if (dailySumBoxoffice != null){
             dailySumBoxofficeService.deleteByDates(date,date);
             dailySumBoxofficeService.save(dailySumBoxoffice);

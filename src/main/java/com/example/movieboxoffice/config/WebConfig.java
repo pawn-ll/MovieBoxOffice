@@ -1,11 +1,17 @@
 package com.example.movieboxoffice.config;
 
+import com.example.movieboxoffice.config.interceptor.IpAccessInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private IpAccessInterceptor ipAccessInterceptor;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -15,6 +21,11 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*") // 允许任何头部
                 .allowCredentials(true) // 允许证书
                 .maxAge(3600); // 预检请求的有效期
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(ipAccessInterceptor);
     }
 }
 

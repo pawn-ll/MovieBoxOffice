@@ -19,20 +19,10 @@ public class RedisService {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    /**
-     * 将给定的键值对存储到Redis中，并设定过期时间。
-     *
-     * @param key 键，用于标识存储的数据。
-     * @param value 值，存储的数据内容。
-     * @param timeout 过期时间，单位为秒。设定该键值对在Redis中存储的时长。
-     */
-    public void set(String key, Object value, long timeout) {
-        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.SECONDS);
-    }
 
     // 获取键对应的值
-    public String get(String key) {
-        return (String)redisTemplate.opsForValue().get(key);
+    public Object get(String key) {
+        return redisTemplate.opsForValue().get(key);
     }
 
     // 删除键
