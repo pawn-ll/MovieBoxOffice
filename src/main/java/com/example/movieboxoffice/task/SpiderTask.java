@@ -14,6 +14,7 @@ import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,7 @@ public class SpiderTask {
     @Autowired
     private RedisService redisService;
 
+    @Scheduled(cron = "5 * * * * ?")
     public void todaySpiderCrawl() {
         /*
         引入redis用缓存60秒更新一次
@@ -54,7 +56,8 @@ public class SpiderTask {
         dailyBoxOfficeSpider.getDefaultSpider().run();
     }
 
-//    更新数据库1小时一次
+    //    更新数据库1小时一次
+    @Scheduled(cron = "0 2 * * * ?")
     @Transactional(rollbackFor =Exception.class)
     public void saveDailyData() {
         String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
@@ -73,10 +76,6 @@ public class SpiderTask {
     }
 
 
-    public void spiderCrawl(String date){
-        dailyBoxOfficeSpider.getDateSpider(date).run();
-    }
-
     /**
      * 详细爬虫抓取功能
      * 该方法从数据库中选取未处理的电影信息，然后通过豆瓣服务获取每部电影的详细信息。
@@ -84,6 +83,7 @@ public class SpiderTask {
      *
      * @throws InterruptedException 如果线程在睡眠时被中断，则抛出此异常
      */
+    @Scheduled(cron = "0 3 0 * * ?")
     public void detailSpiderCrawl() throws InterruptedException {
         List<MovieDo> movieDos = movieDoService.selectNotDO();
 
@@ -101,6 +101,7 @@ public class SpiderTask {
      *
      * @throws InterruptedException 如果线程在睡眠时被中断，则会抛出此异常。
      */
+    @Scheduled(cron = "0 5 0/2 * * ?")
     public void detailSpiderSecondCrawl() throws InterruptedException {
 //        doubanService.getMovieDetail("海安舅舅",545476852854853L,true);
         List<SecondDo> notDOList = secondDoService.getNotDOList();
@@ -113,6 +114,7 @@ public class SpiderTask {
 
     }
 
+    @Scheduled(cron = "0 10 0/2 * * ?")
     public void setPosterBase64() {
         movieDetailService.setPosterBase64();
     }
@@ -134,6 +136,7 @@ public class SpiderTask {
         crawlMonth(year, month);
     }
 
+
     private void crawlMonth(Integer year, Integer month){
         long startTime = System.currentTimeMillis();
         List<String> list = MyDateUtils.generateDatesOfYearMonth(year, month);
@@ -144,6 +147,10 @@ public class SpiderTask {
         long endTime =  System.currentTimeMillis();
         long duration = (endTime - startTime)/1000;
         log.error("爬取 "+year+"-"+month+" 完成! 耗时: " + duration + " 秒");
+    }
+
+    public void spiderCrawl(String date){
+        dailyBoxOfficeSpider.getDateSpider(date).run();
     }
 
 
