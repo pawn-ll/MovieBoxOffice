@@ -21,4 +21,6 @@ public interface ISecondDoService extends IService<SecondDo> {
 
     void doMovie(Long movieCode);
 
+    List<SecondDo> selectUrlList();
+
 }

@@ -14,11 +14,9 @@ class MovieBoxOfficeApplicationTests {
     private SpiderTask spiderTask;
 
     @Test
-    public void testService() {
+    public void testService() throws InterruptedException {
 //        movieBoxofficeService.insertAll();
-        spiderTask.setPosterBase64();
-//        redisService.set("1","haha");
-//        Object o = redisService.get("1");
+        spiderTask.getDetailByUrl();
         System.out.println();
     }
 

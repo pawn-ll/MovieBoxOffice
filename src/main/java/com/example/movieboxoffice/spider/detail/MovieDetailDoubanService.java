@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import us.codecraft.webmagic.selector.Html;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -73,7 +72,7 @@ public class MovieDetailDoubanService {
 
     }
 
-    private DoubanSuggest  movieDetail(String movieName ,Long movieCode) throws IOException {
+    private DoubanSuggest  movieDetail(String movieName ,Long movieCode)  {
         this.movieCode = movieCode;
         this.movieName = movieName;
         String requestUrl = BASE_URL + (encodeQuery(movieName));
@@ -109,7 +108,7 @@ public class MovieDetailDoubanService {
         return movie;
     }
 
-    private  void getSuggestMovieDetail(String suggestUrl,String poster) {
+    public void getSuggestMovieDetail(String suggestUrl,String poster) {
         if (suggestUrl == null) {
             System.out.println("电影详情获取失败");
             return;
@@ -192,8 +191,109 @@ public class MovieDetailDoubanService {
                     movieDetail.setIntroduction(introduction);
                 }
             }
+            if (poster == null || poster.length() == 0){
+                poster = html.xpath("//*[@id='mainpic']/a/img").get();
+                int start = poster.indexOf("http");
+                int end = poster.indexOf("title");
+                poster = poster.substring(start, end-2);
+            }
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
+            movieDetailService.save(movieDetail);
+        }
+
+    }
+    public void getSuggestMovieDetail(String suggestUrl,String poster,String name ,Long code) {
+        if (suggestUrl == null) {
+            System.out.println("电影详情获取失败");
+            return;
+        }
+        Html html = null;
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(suggestUrl).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
+
+            connection.connect();
+
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                // 解析响应
+                html = new Html(response.toString(), suggestUrl);
+
+            } else {
+                System.err.println("请求失败，状态码：" + connection.getResponseCode());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (html != null) {
+            List<String> persons = html.xpath("//*[@id='info']/span/span[@class='attrs']").all();
+            List<String> directors = new ArrayList<>();
+            if (persons.size()>0) {
+                directors = new Html(persons.get(0)).xpath("//a/text()").all();
+            }
+            String director = getValidString(directors, MovieDetailLength.DIRECTOR.getLength());
+            String scripter = null;
+            if (persons.size()>2) {
+                List<String> scripters = new Html(persons.get(1)).xpath("//a/text()").all();
+                scripter = getValidString(scripters, MovieDetailLength.SCIPTER.getLength());
+            }
+            String actor = null;
+            List<String> actors = new ArrayList<>();
+            if (persons.size()==2) {
+                actors = new Html(persons.get(1)).xpath("//a/text()").all();
+
+            }else if (persons.size()>2){
+                actors = new Html(persons.get(2)).xpath("//a/text()").all();
+            }
+            actor = getValidString(actors, MovieDetailLength.ACTOR.getLength());
+
+            List<String> types = html.xpath("//*[@id='info']/span[@property='v:genre']/text()").all();
+            String type = getValidString(types, MovieDetailLength.TYPE.getLength());
+
+            List<String> releaseDates = html.xpath("//*[@id='info']/span[@property='v:initialReleaseDate']/text()").all();
+            String releaseDate = getValidString(releaseDates, MovieDetailLength.TYPE.getLength());
+
+            String area = html.xpath("//*[@id='info']//text()").get().replace("/","").trim().split(" ")[0];
+            String time = html.xpath("//*[@id='info']/span[@property='v:runtime']/text()").get();
+            String introduction = html.xpath("//span[@property='v:summary']/text()").get();
+            MovieDetail movieDetail = new MovieDetail();
+            movieDetail.setMovieName(name);
+            movieDetail.setDirector(director.trim());
+            if (scripter != null) {
+                movieDetail.setScripter(scripter.trim());
+            }
+            movieDetail.setActor(actor.trim());
+            movieDetail.setReleaseDate(releaseDate.trim());
+            movieDetail.setType(type.trim());
+            if (area != null) {
+                movieDetail.setArea(area.trim());
+            }
+            if (time != null) {
+                movieDetail.setLength(time.trim());
+            }
+            if (introduction != null) {
+                if (introduction.length() > 1024) {
+                    movieDetail.setIntroduction(introduction.substring(0, 1024));
+                } else {
+                    movieDetail.setIntroduction(introduction);
+                }
+            }
+            if (poster == null || poster.length() == 0){
+                poster = html.xpath("//*[@id='mainpic']/a/img").get();
+                int start = poster.indexOf("http");
+                int end = poster.indexOf("title");
+                poster = poster.substring(start, end-2);
+            }
+            movieDetail.setPoster(poster);
+            movieDetail.setMovieCode(code);
             movieDetailService.save(movieDetail);
         }
 

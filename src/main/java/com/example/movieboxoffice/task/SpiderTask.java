@@ -90,7 +90,7 @@ public class SpiderTask {
         for (MovieDo movieDo : movieDos){
             doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),false);
             System.out.println("--------------休息-----------------");
-            Thread.sleep(1000*5);
+            Thread.sleep(1000*3);
         }
     }
 
@@ -101,7 +101,7 @@ public class SpiderTask {
      *
      * @throws InterruptedException 如果线程在睡眠时被中断，则会抛出此异常。
      */
-    @Scheduled(cron = "0 5 0/2 * * ?")
+    @Scheduled(cron = "0 10 * * * ?")
     public void detailSpiderSecondCrawl() throws InterruptedException {
 //        doubanService.getMovieDetail("海安舅舅",545476852854853L,true);
         List<SecondDo> notDOList = secondDoService.getNotDOList();
@@ -109,14 +109,25 @@ public class SpiderTask {
         for (SecondDo movieDo : notDOList){
             doubanService.getMovieDetail(movieDo.getMovieName(),movieDo.getMovieCode(),true);
             System.out.println("--------------休息-----------------");
-            Thread.sleep(1000*5);
+            Thread.sleep(1000*3);
         }
 
     }
 
-    @Scheduled(cron = "0 10 0/2 * * ?")
+    @Scheduled(cron = "0 15 0/6 * * ?")
     public void setPosterBase64() {
         movieDetailService.setPosterBase64();
+    }
+
+    public void getDetailByUrl() throws InterruptedException {
+        List<SecondDo> notDOList = secondDoService.selectUrlList();
+        for (SecondDo movieDo : notDOList){
+            doubanService.getSuggestMovieDetail(movieDo.getDetailUrl(),null, movieDo.getMovieName(), movieDo.getMovieCode());
+            secondDoService.doMovie(movieDo.getMovieCode());
+            System.out.println("--------------休息-----------------");
+            Thread.sleep(1000);
+        }
+
     }
 
     /**

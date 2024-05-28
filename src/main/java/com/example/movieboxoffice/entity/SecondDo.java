@@ -3,6 +3,7 @@ package com.example.movieboxoffice.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -16,6 +17,7 @@ import java.util.Date;
  * @since 2024-05-13
  */
 @TableName("t_second_do")
+@Data
 public class SecondDo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,54 +44,14 @@ public class SecondDo implements Serializable {
     private Integer isDo;
 
     /**
+     * 手动填写的详情url
+     */
+    private String detailUrl;
+
+    /**
      * 创建时间
      */
     private Date createTime;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    public Long getMovieCode() {
-        return movieCode;
-    }
-
-    public void setMovieCode(Long movieCode) {
-        this.movieCode = movieCode;
-    }
-    public String getMovieName() {
-        return movieName;
-    }
-
-    public void setMovieName(String movieName) {
-        this.movieName = movieName;
-    }
-    public Integer getIsDo() {
-        return isDo;
-    }
-
-    public void setIsDo(Integer isDo) {
-        this.isDo = isDo;
-    }
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    @Override
-    public String toString() {
-        return "SecondDo{" +
-            "id=" + id +
-            ", movieCode=" + movieCode +
-            ", movieName=" + movieName +
-            ", isDo=" + isDo +
-            ", createTime=" + createTime +
-        "}";
-    }
 }
