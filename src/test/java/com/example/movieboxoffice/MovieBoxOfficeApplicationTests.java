@@ -1,5 +1,6 @@
 package com.example.movieboxoffice;
 
+import com.example.movieboxoffice.service.impl.MovieBoxofficeServiceImpl;
 import com.example.movieboxoffice.task.SpiderTask;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -12,11 +13,14 @@ class MovieBoxOfficeApplicationTests {
 
     @Autowired
     private SpiderTask spiderTask;
+    @Autowired
+    private MovieBoxofficeServiceImpl movieBoxofficeService;
 
     @Test
     public void testService() throws InterruptedException {
-//        movieBoxofficeService.insertAll();
-        spiderTask.getDetailByUrl();
+        spiderTask.updateSumBoxoffice();
+//        spiderTask.getDetailByUrl();
+//        spiderTask.setPosterBase64();
         System.out.println();
     }
 
@@ -45,7 +49,7 @@ class MovieBoxOfficeApplicationTests {
     public void dateSpider(){
         long startTime = System.currentTimeMillis();
         spiderTask.todaySpiderCrawl();
-//        spiderTask.saveDailyData();
+        spiderTask.saveDailyData();
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("耗时"+duration + "ms" );
@@ -53,7 +57,7 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void reCrawl(){
-        spiderTask.reCrawlMonth(2022, 9);
+        spiderTask.reCrawlMonth(2024, 5);
     }
 
 

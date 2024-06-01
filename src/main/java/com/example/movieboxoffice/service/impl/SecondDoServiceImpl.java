@@ -54,7 +54,9 @@ public class SecondDoServiceImpl extends ServiceImpl<SecondDoMapper, SecondDo> i
     @Override
     public List<SecondDo> selectUrlList() {
         return baseMapper.selectPage(new Page<>(0,50),
-                new LambdaQueryWrapper<SecondDo>().likeRight(SecondDo::getDetailUrl,"https://movie.douban.com"))
+                new LambdaQueryWrapper<SecondDo>()
+                        .eq(SecondDo::getIsDo,0)
+                        .likeRight(SecondDo::getDetailUrl,"https://movie.douban.com"))
                 .getRecords();
     }
 }

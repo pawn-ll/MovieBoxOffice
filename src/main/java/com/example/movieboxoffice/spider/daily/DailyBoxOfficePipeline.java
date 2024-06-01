@@ -48,6 +48,7 @@ public class DailyBoxOfficePipeline implements Pipeline {
         DailyBoxoffice dailyBoxoffice = null;
 
         for (BoxOfficeWeb boxOffice :list ){
+            dailyBoxoffice = new DailyBoxoffice();
             dailyBoxoffice.setId(null);
             dailyBoxoffice.setRecordDate(date);
             dailyBoxoffice.setDayBoxoffice(parseBigDecimal(boxOffice.getSalesInWanDesc()));

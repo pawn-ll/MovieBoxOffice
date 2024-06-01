@@ -2,10 +2,8 @@ package com.example.movieboxoffice.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.movieboxoffice.entity.DailyBoxoffice;
-import com.example.movieboxoffice.entity.DailySumBoxoffice;
-import com.example.movieboxoffice.entity.MovieDo;
-import com.example.movieboxoffice.entity.SecondDo;
+import com.example.movieboxoffice.entity.*;
+import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
@@ -18,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -45,6 +44,8 @@ public class SpiderTask {
     private MovieDetailDoubanService doubanService;
     @Autowired
     private MovieDetailServiceImpl movieDetailService;
+    @Autowired
+    private MovieBoxofficeServiceImpl movieBoxofficeService;
     @Autowired
     private RedisService redisService;
 
@@ -103,7 +104,6 @@ public class SpiderTask {
      */
     @Scheduled(cron = "0 10 * * * ?")
     public void detailSpiderSecondCrawl() throws InterruptedException {
-//        doubanService.getMovieDetail("海安舅舅",545476852854853L,true);
         List<SecondDo> notDOList = secondDoService.getNotDOList();
 
         for (SecondDo movieDo : notDOList){
@@ -117,6 +117,20 @@ public class SpiderTask {
     @Scheduled(cron = "0 15 0/6 * * ?")
     public void setPosterBase64() {
         movieDetailService.setPosterBase64();
+    }
+
+    @Scheduled(cron = "10 59 23 * * ?")
+    public void updateSumBoxoffice() {
+        List<DailyBoxofficeVO> today = dailyBoxofficeService.today();
+        for (DailyBoxofficeVO boxofficeVO : today){
+            MovieBoxoffice byCode = movieBoxofficeService.getByCode(boxofficeVO.getMovieCode());
+            if (byCode != null) {
+                byCode.setSumBoxoffice(movieBoxofficeService.convertBoxoffice(boxofficeVO.getSumBoxoffice()));
+                byCode.setSumSplitBoxoffice(movieBoxofficeService.convertBoxoffice(boxofficeVO.getSumSplitBoxoffice()));
+                byCode.setUpdateTime(new Date());
+                movieBoxofficeService.updateById(byCode);
+            }
+        }
     }
 
     public void getDetailByUrl() throws InterruptedException {
@@ -144,13 +158,12 @@ public class SpiderTask {
 
         dailyBoxofficeService.deleteByDates(startDate, endDate);
         dailySumBoxofficeService.deleteByDates(startDate, endDate);
-        crawlMonth(year, month);
+        crawlMonth(year, month ,list);
     }
 
 
-    private void crawlMonth(Integer year, Integer month){
+    private void crawlMonth(Integer year, Integer month, List<String> list){
         long startTime = System.currentTimeMillis();
-        List<String> list = MyDateUtils.generateDatesOfYearMonth(year, month);
         for (String date : list) {
             log.error("开始爬取!" + date + "-----------------------------------------------");
             spiderCrawl(date);

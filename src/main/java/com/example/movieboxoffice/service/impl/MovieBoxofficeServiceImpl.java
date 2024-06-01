@@ -73,7 +73,12 @@ public class MovieBoxofficeServiceImpl extends ServiceImpl<MovieBoxofficeMapper,
         }
     }
 
-    private BigDecimal convertBoxoffice(String boxoffice){
+    @Override
+    public MovieBoxoffice getByCode(Long movieCode) {
+        return baseMapper.selectOne(new QueryWrapper<MovieBoxoffice>().eq("movie_code",movieCode));
+    }
+
+    public BigDecimal convertBoxoffice(String boxoffice){
         int length = boxoffice.length();
         BigDecimal res ;
         if (boxoffice.charAt(length - 1) == '万'){

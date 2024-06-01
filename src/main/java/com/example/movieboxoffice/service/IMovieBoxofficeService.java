@@ -20,4 +20,6 @@ public interface IMovieBoxofficeService extends IService<MovieBoxoffice> {
 
     void insertAll();
 
+    MovieBoxoffice getByCode(Long movieCode);
+
 }
