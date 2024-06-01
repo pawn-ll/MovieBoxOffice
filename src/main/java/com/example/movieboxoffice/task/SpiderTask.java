@@ -58,7 +58,7 @@ public class SpiderTask {
     }
 
     //    更新数据库1小时一次
-    @Scheduled(cron = "0 2 * * * ?")
+    @Scheduled(cron = "0 59 * * * ?")
     @Transactional(rollbackFor =Exception.class)
     public void saveDailyData() {
         String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
@@ -119,7 +119,7 @@ public class SpiderTask {
         movieDetailService.setPosterBase64();
     }
 
-    @Scheduled(cron = "10 59 23 * * ?")
+    @Scheduled(cron = "30 59 23 * * ?")
     public void updateSumBoxoffice() {
         List<DailyBoxofficeVO> today = dailyBoxofficeService.today();
         for (DailyBoxofficeVO boxofficeVO : today){
