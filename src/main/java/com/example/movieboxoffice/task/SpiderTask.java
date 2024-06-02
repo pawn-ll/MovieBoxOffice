@@ -54,7 +54,9 @@ public class SpiderTask {
         /*
         引入redis用缓存60秒更新一次
          */
-        dailyBoxOfficeSpider.getDefaultSpider().run();
+//        dailyBoxOfficeSpider.getDefaultSpider().run();
+        dailyBoxOfficeSpider.defaultSpider();
+
     }
 
     //    更新数据库1小时一次
@@ -174,7 +176,8 @@ public class SpiderTask {
     }
 
     public void spiderCrawl(String date){
-        dailyBoxOfficeSpider.getDateSpider(date).run();
+//        dailyBoxOfficeSpider.getDateSpider(date).run();
+        dailyBoxOfficeSpider.dateSpider(date);
     }
 
 

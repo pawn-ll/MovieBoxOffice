@@ -49,7 +49,7 @@ class MovieBoxOfficeApplicationTests {
     public void dateSpider(){
         long startTime = System.currentTimeMillis();
         spiderTask.todaySpiderCrawl();
-        spiderTask.saveDailyData();
+//        spiderTask.saveDailyData();
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("耗时"+duration + "ms" );
