@@ -16,12 +16,11 @@ public class DailyBoxOfficeSpider {
     private DefaultDailyBoxOfficePipeline defaultDailyBoxOfficePipeline;
 
 
-    private static String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
-
-    private static String url = "https://zgdypf.zgdypw.cn/getDayData?date="+date+"&withSvcFee=true";
 
 
     public  Spider getDefaultSpider(){
+        String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+        String url = "https://zgdypf.zgdypw.cn/getDayData?date="+date+"&withSvcFee=true";
         return Spider.create(spiderPageProcessor).addPipeline(defaultDailyBoxOfficePipeline).addUrl(url).thread(3);
     }
 
