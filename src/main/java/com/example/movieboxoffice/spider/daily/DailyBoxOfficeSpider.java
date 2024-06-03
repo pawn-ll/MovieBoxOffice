@@ -104,7 +104,7 @@ public class DailyBoxOfficeSpider {
             JSONObject jsonObject = JSON.parseObject(res);
             String str = jsonObject.getString("list");
             List<BoxOfficeWeb> list = JSON.parseArray(str, BoxOfficeWeb.class);
-            log.error("------------size:"+list.size());
+//            log.error("------------size:"+list.size());
             List<DailyBoxoffice> dailyBoxoffices = new ArrayList<>();
             List<MovieDo> existsMovies = movieDoService.selectExistList();
             Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieDo::getMovieName, MovieDo::getMovieCode));

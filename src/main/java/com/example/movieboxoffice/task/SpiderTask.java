@@ -49,10 +49,10 @@ public class SpiderTask {
     @Autowired
     private RedisService redisService;
 
-    @Scheduled(cron = "5 * * * * ?")
+    @Scheduled(fixedRate = 1000*10)
     public void todaySpiderCrawl() {
         /*
-        引入redis用缓存60秒更新一次
+        引入redis用缓存10秒更新一次
          */
 //        dailyBoxOfficeSpider.getDefaultSpider().run();
         dailyBoxOfficeSpider.defaultSpider();
@@ -63,6 +63,7 @@ public class SpiderTask {
     @Scheduled(cron = "0 59 * * * ?")
     @Transactional(rollbackFor =Exception.class)
     public void saveDailyData() {
+        log.info("---------每日票房保存------------");
         String date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
         List<DailyBoxoffice> dailyBoxoffices = JSONArray.parseArray((String)redisService.get(MyConstant.TODAY_DAILY_BOXOFFICELIST), DailyBoxoffice.class);
         if (dailyBoxoffices.size() > 0){
@@ -88,6 +89,7 @@ public class SpiderTask {
      */
     @Scheduled(cron = "0 3 0 * * ?")
     public void detailSpiderCrawl() throws InterruptedException {
+        log.info("---------电影详情首次爬取------------");
         List<MovieDo> movieDos = movieDoService.selectNotDO();
 
         for (MovieDo movieDo : movieDos){
@@ -106,6 +108,7 @@ public class SpiderTask {
      */
     @Scheduled(cron = "0 10 * * * ?")
     public void detailSpiderSecondCrawl() throws InterruptedException {
+        log.info("---------电影详情二次爬取------------");
         List<SecondDo> notDOList = secondDoService.getNotDOList();
 
         for (SecondDo movieDo : notDOList){
@@ -118,11 +121,13 @@ public class SpiderTask {
 
     @Scheduled(cron = "0 15 0/6 * * ?")
     public void setPosterBase64() {
+        log.info("---------电影详情保存海报Base64------------");
         movieDetailService.setPosterBase64();
     }
 
     @Scheduled(cron = "30 59 23 * * ?")
     public void updateSumBoxoffice() {
+        log.info("---------更新电影总票房------------");
         List<DailyBoxofficeVO> today = dailyBoxofficeService.today();
         for (DailyBoxofficeVO boxofficeVO : today){
             MovieBoxoffice byCode = movieBoxofficeService.getByCode(boxofficeVO.getMovieCode());
