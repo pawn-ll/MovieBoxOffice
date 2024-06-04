@@ -1,7 +1,9 @@
 package com.example.movieboxoffice.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 
 /**
@@ -20,4 +22,6 @@ public interface IMovieDetailService extends IService<MovieDetail> {
     void deleteByCode(Long movieCode);
 
     void setPosterBase64();
+
+    Page<MovieDetail> getDetailBySearch(MovieDetailPageRequest request);
 }

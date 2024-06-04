@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.mapper.MovieDetailMapper;
 import com.example.movieboxoffice.service.IMovieDetailService;
@@ -65,6 +66,16 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public Page<MovieDetail> getDetailBySearch(MovieDetailPageRequest request) {
+        Page<MovieDetail> movieDetailPage = this.baseMapper.selectPage(
+                new Page<>(request.getCurrent(), request.getSize()),
+                new LambdaQueryWrapper<MovieDetail>()
+                        .likeRight(MovieDetail::getMovieName, request.getMovieName()));
+
+        return movieDetailPage;
     }
 
 

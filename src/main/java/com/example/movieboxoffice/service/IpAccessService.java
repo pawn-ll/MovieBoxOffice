@@ -28,7 +28,7 @@ public class IpAccessService {
 
         String key = String.format(IP_ACCESS_KEY_FORMAT, ipAddress);
         Integer count = (Integer) redisService.get(key);
-        return count != null && count >= 100;
+        return count != null && count >= 1000;
     }
 
 }

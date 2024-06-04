@@ -1,6 +1,9 @@
 package com.example.movieboxoffice;
 
-import com.example.movieboxoffice.service.impl.MovieBoxofficeServiceImpl;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
+import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.task.SpiderTask;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -14,13 +17,18 @@ class MovieBoxOfficeApplicationTests {
     @Autowired
     private SpiderTask spiderTask;
     @Autowired
-    private MovieBoxofficeServiceImpl movieBoxofficeService;
+    private MovieDetailServiceImpl movieDetailService;
 
     @Test
     public void testService() throws InterruptedException {
-        spiderTask.updateSumBoxoffice();
+//        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
+        MovieDetailPageRequest request = new MovieDetailPageRequest();
+        request.setMovieName("赛尔号");
+        request.setCurrent(1);
+        request.setSize(10);
+        Page<MovieDetail> detailBySearch = movieDetailService.getDetailBySearch(request);
         System.out.println();
     }
 

@@ -1,6 +1,9 @@
 package com.example.movieboxoffice.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.movieboxoffice.entity.MovieDetail;
 import com.example.movieboxoffice.entity.Response;
+import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,13 @@ public class MovieDetailController {
     public Response<MovieDetailVO> getMovieDetail(@RequestParam Long movieCode){
         MovieDetailVO movieDetailVO= movieDetailService.getDeatail(movieCode);
         return Response.success(movieDetailVO);
+    }
+
+    @PostMapping("/search")
+    @ResponseBody
+    public Response<Page<MovieDetail>> getDetailBySearch(@RequestBody MovieDetailPageRequest request){
+        Page<MovieDetail> detailBySearch = movieDetailService.getDetailBySearch(request);
+        return Response.success(detailBySearch);
     }
 
 }
