@@ -1,10 +1,9 @@
 package com.example.movieboxoffice;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.movieboxoffice.entity.MovieDetail;
-import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.task.SpiderTask;
+import com.example.movieboxoffice.utils.MyConstant;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,16 @@ class MovieBoxOfficeApplicationTests {
     private SpiderTask spiderTask;
     @Autowired
     private MovieDetailServiceImpl movieDetailService;
+    @Autowired
+    private RedisService redisService;
 
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-        MovieDetailPageRequest request = new MovieDetailPageRequest();
-        request.setMovieName("赛尔号");
-        request.setCurrent(1);
-        request.setSize(10);
-        Page<MovieDetail> detailBySearch = movieDetailService.getDetailBySearch(request);
+        String ipAddress = "125.71.95.191";
+        boolean b = redisService.sIsMember(MyConstant.WHITE_IP_LIST, ipAddress);
         System.out.println();
     }
 
