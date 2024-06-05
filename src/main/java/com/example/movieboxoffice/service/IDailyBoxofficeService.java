@@ -34,5 +34,9 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
     void verifyCode(Long oldCode,Long newCode);
 
+    void statisDaily(Integer statisType);
+
+    void statisHistory(Integer statisType, String startDate, String endDate);
+
 
 }

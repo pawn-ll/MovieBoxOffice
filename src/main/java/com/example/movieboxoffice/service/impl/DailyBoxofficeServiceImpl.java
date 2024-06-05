@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.ConditionException;
 import com.example.movieboxoffice.entity.DailyBoxoffice;
+import com.example.movieboxoffice.entity.StatisBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.mapper.DailyBoxofficeMapper;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +41,8 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
 
     @Autowired
     private RedisService redisService;
-
+    @Autowired
+    private StatisBoxofficeServiceImpl statisBoxofficeService;
 
 
     @Override
@@ -156,6 +159,85 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         this.baseMapper.verifyCode(oldCode,newCode);
     }
 
+    @Override
+    public void statisDaily(Integer statisType) {
+        String endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+        String startDate = "";
+        String interval = getStatisInterval(statisType , endDate);
+        if (statisType == 1){
+            startDate = endDate.substring(0,8)+"01";
+        }else if (statisType == 2){
+            startDate = endDate.substring(0,5)+"01-01";
+        }
+        List<Map<String, Object>> statisData = getStatisData(startDate, endDate);
+        if (statisData.size() > 0){
+            statisData.forEach(map -> {
+                Long movieCode = (Long) map.get("movie_code");
+                StatisBoxoffice statisBoxoffice = statisBoxofficeService.getStatisBoxoffice(movieCode, statisType, interval);
+                if (statisBoxoffice != null){
+                    statisBoxoffice.setStatisSumBoxoffice(new BigDecimal(map.get("statis_sum_boxoffice").toString()));
+                    statisBoxoffice.setAvgBoxofficeRate(map.get("avg_boxoffice_rate").toString()+"%");
+                    statisBoxoffice.setAvgArrangeRate(map.get("avg_arrange_rate").toString()+"%");
+                    statisBoxoffice.setAvgSeatRate(map.get("avg_seat_rate").toString()+"%");
+                    statisBoxoffice.setUpdateTime(new Date());
+                    statisBoxofficeService.updateById(statisBoxoffice);
+                }else {
+                    StatisBoxoffice newStatisBoxoffice = new StatisBoxoffice();
+                    newStatisBoxoffice.setMovieCode(movieCode);
+                    newStatisBoxoffice.setMovieName((String) map.get("movie_name"));
+                    newStatisBoxoffice.setStatisSumBoxoffice(new BigDecimal(map.get("statis_sum_boxoffice").toString()));
+                    newStatisBoxoffice.setAvgBoxofficeRate(map.get("avg_boxoffice_rate").toString()+"%");
+                    newStatisBoxoffice.setAvgArrangeRate(map.get("avg_arrange_rate").toString()+"%");
+                    newStatisBoxoffice.setAvgSeatRate(map.get("avg_seat_rate").toString()+"%");
+                    newStatisBoxoffice.setStatisInterval(interval);
+                    newStatisBoxoffice.setStatisType(statisType);
+                    statisBoxofficeService.save(newStatisBoxoffice);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void statisHistory(Integer statisType, String startDate, String endDate) {
+        List<Map<String, Object>> statisData = getStatisData(startDate, endDate);
+        if (statisData.size() > 0){
+            statisData.forEach(map -> {
+                StatisBoxoffice statisBoxoffice = new StatisBoxoffice();
+                statisBoxoffice.setMovieCode((Long) map.get("movie_code"));
+                statisBoxoffice.setMovieName((String) map.get("movie_name"));
+                statisBoxoffice.setStatisSumBoxoffice(new BigDecimal(map.get("statis_sum_boxoffice").toString()));
+                statisBoxoffice.setAvgBoxofficeRate(map.get("avg_boxoffice_rate").toString()+"%");
+                statisBoxoffice.setAvgArrangeRate(map.get("avg_arrange_rate").toString()+"%");
+                statisBoxoffice.setAvgSeatRate(map.get("avg_seat_rate").toString()+"%");
+                statisBoxoffice.setStatisInterval(getStatisInterval(statisType , startDate));
+                statisBoxoffice.setStatisType(statisType);
+                statisBoxofficeService.save(statisBoxoffice);
+            });
+        }
+    }
+
+    private String getStatisInterval(Integer statisType,String date){
+        if (statisType == 1){
+            return date.substring(0,7);
+        }else if (statisType == 2){
+            return date.substring(0,4);
+        }else {
+            return null;
+        }
+    }
+    private List<Map<String, Object>> getStatisData(String startDate, String endDate){
+        QueryWrapper<DailyBoxoffice> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+                .ge("record_date", startDate) // Greater than or equal to start date
+                .le("record_date", endDate) // Less than or equal to end date
+                .select("movie_code", "movie_name", "SUM(day_boxoffice) statis_sum_boxoffice",
+                        "ROUND(AVG(day_boxoffice_rate), 2) avg_boxoffice_rate",
+                        "ROUND(AVG(day_arrange_rate), 2) avg_arrange_rate",
+                        "ROUND(AVG(day_seat_rate), 2) avg_seat_rate")
+                .groupBy("movie_code")
+                .orderByDesc("statis_sum_boxoffice"); // Order by sumBoxOffice in descending order
+         return baseMapper.selectMaps(queryWrapper);
+    }
 
     private String getReleaseDate(Long movieCode) {
         DailyBoxoffice dailyBoxoffice = this.baseMapper.selectOne(new LambdaQueryWrapper<DailyBoxoffice>()

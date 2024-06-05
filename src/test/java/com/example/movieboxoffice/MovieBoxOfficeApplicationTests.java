@@ -1,9 +1,8 @@
 package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.service.RedisService;
-import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.task.SpiderTask;
-import com.example.movieboxoffice.utils.MyConstant;
+import com.example.movieboxoffice.task.StatisTask;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ class MovieBoxOfficeApplicationTests {
     @Autowired
     private SpiderTask spiderTask;
     @Autowired
-    private MovieDetailServiceImpl movieDetailService;
+    private StatisTask statisTask;
     @Autowired
     private RedisService redisService;
 
@@ -25,8 +24,7 @@ class MovieBoxOfficeApplicationTests {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-        String ipAddress = "125.71.95.191";
-        boolean b = redisService.sIsMember(MyConstant.WHITE_IP_LIST, ipAddress);
+        statisTask.statisDailyBoxoffice();
         System.out.println();
     }
 
