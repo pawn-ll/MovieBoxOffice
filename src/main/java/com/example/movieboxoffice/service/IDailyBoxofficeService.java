@@ -2,6 +2,7 @@ package com.example.movieboxoffice.service;
 
 import com.example.movieboxoffice.entity.DailyBoxoffice;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.movieboxoffice.entity.StatisBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.entity.vo.HistoygramVO;
 
@@ -38,5 +39,5 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
 
     void statisHistory(Integer statisType, String startDate, String endDate);
 
-
+    List<StatisBoxoffice> getStatis(String startDate, String endDate);
 }

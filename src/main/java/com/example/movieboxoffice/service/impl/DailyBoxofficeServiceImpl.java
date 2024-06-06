@@ -216,7 +216,28 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
         }
     }
 
-    private String getStatisInterval(Integer statisType,String date){
+    @Override
+    public List<StatisBoxoffice> getStatis(String startDate, String endDate) {
+        List<Map<String, Object>> statisData = getStatisData(startDate, endDate);
+        List<StatisBoxoffice> list = new ArrayList<>();
+        if (statisData.size() > 0){
+            statisData.forEach(map -> {
+                StatisBoxoffice statisBoxoffice = new StatisBoxoffice();
+                statisBoxoffice.setMovieCode((Long) map.get("movie_code"));
+                statisBoxoffice.setMovieName((String) map.get("movie_name"));
+                statisBoxoffice.setStatisSumBoxoffice(new BigDecimal(map.get("statis_sum_boxoffice").toString()));
+                statisBoxoffice.setAvgBoxofficeRate(map.get("avg_boxoffice_rate").toString() + "%");
+                statisBoxoffice.setAvgArrangeRate(map.get("avg_arrange_rate").toString() + "%");
+                statisBoxoffice.setAvgSeatRate(map.get("avg_seat_rate").toString() + "%");
+                if(statisBoxoffice.getStatisSumBoxoffice().compareTo(new BigDecimal(1))>0) {
+                    list.add(statisBoxoffice);
+                }
+            });
+        }
+        return list;
+    }
+
+    private String getStatisInterval(Integer statisType, String date){
         if (statisType == 1){
             return date.substring(0,7);
         }else if (statisType == 2){

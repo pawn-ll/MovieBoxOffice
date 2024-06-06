@@ -2,6 +2,7 @@ package com.example.movieboxoffice.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.movieboxoffice.entity.Ip;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @author baomidou
  * @since 2024-06-04
  */
+@Service
 public interface IIpService extends IService<Ip> {
 
     List<Ip> getWhiteIpList();

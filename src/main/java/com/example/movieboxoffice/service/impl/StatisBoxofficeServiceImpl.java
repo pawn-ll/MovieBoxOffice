@@ -7,6 +7,8 @@ import com.example.movieboxoffice.service.IStatisBoxofficeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -26,4 +28,13 @@ public class StatisBoxofficeServiceImpl extends ServiceImpl<StatisBoxofficeMappe
                 .eq(StatisBoxoffice::getStatisType,statisType)
                 .eq(StatisBoxoffice::getStatisInterval,statisInterval));
     }
+
+    @Override
+    public List<StatisBoxoffice> getStatisList(Integer statisType, String statisInterval) {
+        return baseMapper.selectList(new LambdaQueryWrapper<StatisBoxoffice>()
+                .eq(StatisBoxoffice::getStatisType,statisType)
+                .eq(StatisBoxoffice::getStatisInterval,statisInterval)
+                .gt(StatisBoxoffice::getStatisSumBoxoffice,1));
+    }
+
 }
