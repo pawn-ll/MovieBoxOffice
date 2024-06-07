@@ -24,7 +24,6 @@ public class IpAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ipAddress = request.getRemoteAddr();
-        log.error("ipAddress:{}", ipAddress);
         if(redisService.sIsMember(MyConstant.WHITE_IP_LIST, ipAddress)){
             return true;
         }
