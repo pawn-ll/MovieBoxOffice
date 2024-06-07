@@ -4,6 +4,7 @@ package com.example.movieboxoffice.config.interceptor;
 import com.example.movieboxoffice.service.IpAccessService;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.utils.MyConstant;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@Log4j2
 public class IpAccessInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -22,6 +24,7 @@ public class IpAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ipAddress = request.getRemoteAddr();
+        log.error("ipAddress:{}", ipAddress);
         if(redisService.sIsMember(MyConstant.WHITE_IP_LIST, ipAddress)){
             return true;
         }
