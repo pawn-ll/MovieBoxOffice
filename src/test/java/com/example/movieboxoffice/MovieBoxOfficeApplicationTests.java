@@ -1,6 +1,5 @@
 package com.example.movieboxoffice;
 
-import com.example.movieboxoffice.entity.StatisBoxoffice;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.StatisBoxofficeServiceImpl;
 import com.example.movieboxoffice.task.SpiderTask;
@@ -9,8 +8,6 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest()
 @Log4j2
@@ -28,9 +25,9 @@ class MovieBoxOfficeApplicationTests {
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
-//        spiderTask.getDetailByUrl();
+        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-        List<StatisBoxoffice> statisList = statisBoxofficeService.getStatisList(2, "2024");
+//        statisTask.statisHistory(2024);
         System.out.println();
     }
 

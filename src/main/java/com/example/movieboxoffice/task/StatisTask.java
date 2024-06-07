@@ -26,6 +26,7 @@ public class StatisTask {
     }
 
     public void statisHistory(Integer year) {
+        long startTime = System.currentTimeMillis();
         String startDate = year.toString()+"-01-01";
         String endDate = year.toString()+"-12-31";
         dailyBoxofficeService.statisHistory(2,startDate,endDate);
@@ -34,5 +35,8 @@ public class StatisTask {
             List<String> list = MyDateUtils.generateDatesOfYearMonth(year, i);
             dailyBoxofficeService.statisHistory(1,list.get(0),list.get(list.size()-1));
         }
+        long endTime =  System.currentTimeMillis();
+        long duration = (endTime - startTime)/1000;
+        log.error(" 耗时: " + duration + " 秒");
     }
 }

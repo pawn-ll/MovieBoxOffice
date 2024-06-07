@@ -1,6 +1,7 @@
 package com.example.movieboxoffice.controller;
 
 import com.example.movieboxoffice.entity.Response;
+import com.example.movieboxoffice.entity.StatisBoxoffice;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
 import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
@@ -48,12 +49,12 @@ public class DailyBoxofficeController {
     }
 
     @GetMapping("/week-list")
-    public Response<List<DailyBoxofficeVO>> getWeekList(String startDate ,String endDate){
+    public Response<List<StatisBoxoffice>> getWeekList(String startDate , String endDate){
         if (startDate ==null || endDate ==null){
             endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
             startDate = MyDateUtils.getAddDate(endDate , MyDateUtils.YYMMDD, -7);
         }
-        List<DailyBoxofficeVO> datesList = dailyBoxoffice.getDatesList(startDate,endDate);
+        List<StatisBoxoffice> datesList = dailyBoxoffice.getDatesList(startDate, endDate);
         return Response.success(datesList);
     }
 

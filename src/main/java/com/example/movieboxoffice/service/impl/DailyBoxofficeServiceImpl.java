@@ -115,37 +115,9 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     }
 
     @Override
-    public List<DailyBoxofficeVO> getDatesList(String startDate, String endDate) {
-        List<DailyBoxoffice> dailyBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
-                .ge(DailyBoxoffice::getRecordDate, startDate)
-                .le(DailyBoxoffice::getRecordDate, endDate)
-                .ge(DailyBoxoffice::getDayBoxoffice, BigDecimal.ONE));
-        List<DailyBoxofficeVO> list = new ArrayList<>();
-        Map<Long, List<DailyBoxoffice>> map  ;
-        if (dailyBoxoffices.size() > 0){
-            map = dailyBoxoffices.stream().collect(Collectors.groupingBy(DailyBoxoffice::getMovieCode));
-            map.forEach((k,v)->{
-                DailyBoxofficeVO dailyBoxofficeVO = new DailyBoxofficeVO();
-                if (v.size() > 1) {
-                    BeanUtils.copyProperties(v.get(0), dailyBoxofficeVO);
-                    BigDecimal sumBoxoffice = BigDecimal.ZERO;
-                    for (DailyBoxoffice dailyBoxoffice : v) {
-                        sumBoxoffice = sumBoxoffice.add(dailyBoxoffice.getDayBoxoffice());
-                    }
-                    dailyBoxofficeVO.setSumBoxoffice(sumBoxoffice.toString());
-                }else {
-                    BeanUtils.copyProperties(v.get(0), dailyBoxofficeVO);
-                }
-                list.add(dailyBoxofficeVO);
-            });
-        }
-        list.sort((o1, o2) -> {
-            if(o1.getDayBoxoffice().compareTo(o2.getDayBoxoffice()) < 0)
-                return 1;
-            else
-                return -1;
-        });
-        return list.subList(0,20);
+    public List<StatisBoxoffice> getDatesList(String startDate, String endDate) {
+        List<StatisBoxoffice> statis = getStatis(startDate, endDate);
+        return statis.subList(0,20);
     }
 
     @Override
