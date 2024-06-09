@@ -55,7 +55,7 @@ class MovieBoxOfficeApplicationTests {
     @Test
     public void dateSpider(){
         long startTime = System.currentTimeMillis();
-        spiderTask.todaySpiderCrawl();
+//        spiderTask.todaySpiderCrawl();
 //        spiderTask.saveDailyData();
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;

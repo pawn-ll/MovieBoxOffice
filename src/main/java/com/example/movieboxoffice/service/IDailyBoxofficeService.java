@@ -40,4 +40,6 @@ public interface IDailyBoxofficeService extends IService<DailyBoxoffice> {
     void statisHistory(Integer statisType, String startDate, String endDate);
 
     List<StatisBoxoffice> getStatis(String startDate, String endDate);
+
+    List<DailyBoxofficeVO> day(String date);
 }

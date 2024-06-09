@@ -21,6 +21,15 @@ public class MyDateUtils {
         System.out.println(getNowDate(YYMMDD));
     }
 
+    public static boolean afterNowDate(String date,String pattern){
+        Date parseDate = parseDate(date, pattern);
+        if (parseDate == null || parseDate.after(new Date())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static String getNowDate (){
         Calendar calendar= Calendar.getInstance();
         SimpleDateFormat dateFormat= new SimpleDateFormat(YYMMDDHHMMSS);

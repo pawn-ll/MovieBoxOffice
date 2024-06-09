@@ -61,6 +61,22 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
     }
 
     @Override
+    public DailySumBoxofficeVO day(String date) {
+        if (MyDateUtils.afterNowDate(date , MyDateUtils.YYMMDD)){
+            date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+        }
+        DailySumBoxoffice dailySumBoxoffice = this.baseMapper.selectOne(new LambdaQueryWrapper<DailySumBoxoffice>()
+                .eq(DailySumBoxoffice::getDate, date));
+        DailySumBoxofficeVO sumBoxofficeVO = new DailySumBoxofficeVO();
+        if (dailySumBoxoffice != null) {
+            sumBoxofficeVO = new DailySumBoxofficeVO();
+            BeanUtils.copyProperties(dailySumBoxoffice, sumBoxofficeVO);
+
+        }
+        return sumBoxofficeVO;
+    }
+
+    @Override
     public HistoygramVO getDatesHistoygram(String startDate, String endDate) {
         List<DailySumBoxoffice> dailySumBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailySumBoxoffice>()
                 .ge(DailySumBoxoffice::getDate, startDate)

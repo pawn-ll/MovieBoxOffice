@@ -20,4 +20,6 @@ public interface IDailySumBoxofficeService extends IService<DailySumBoxoffice> {
     DailySumBoxofficeVO today() ;
 
     HistoygramVO getDatesHistoygram(String startDate , String endDate);
+
+    DailySumBoxofficeVO day(String date);
 }

@@ -41,4 +41,10 @@ public class DailySumBoxofficeController {
         return Response.success(histoygramVO);
     }
 
+    @GetMapping("/day")
+    @ResponseBody
+    public Response<DailySumBoxofficeVO> getDay(String date){
+        DailySumBoxofficeVO today = dailySumBoxoffice.day(date);
+        return Response.success(today);
+    }
 }

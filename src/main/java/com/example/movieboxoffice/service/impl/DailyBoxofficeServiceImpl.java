@@ -189,6 +189,26 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     }
 
     @Override
+    public List<DailyBoxofficeVO> day(String date) {
+        List<DailyBoxofficeVO> list = new ArrayList<>();
+        if (MyDateUtils.afterNowDate(date , MyDateUtils.YYMMDD)){
+            date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
+        }
+        List<DailyBoxoffice> dailyBoxoffices = this.baseMapper.selectList(new LambdaQueryWrapper<DailyBoxoffice>()
+                .eq(DailyBoxoffice::getRecordDate, date));
+
+        if (dailyBoxoffices.size() > 0){
+            for (DailyBoxoffice dailyBoxoffice : dailyBoxoffices) {
+                if (dailyBoxoffice.getDayBoxoffice().compareTo(BigDecimal.ONE) < 0) break;
+                DailyBoxofficeVO dailyBoxofficeVO = new DailyBoxofficeVO();
+                BeanUtils.copyProperties(dailyBoxoffice,dailyBoxofficeVO);
+                list.add(dailyBoxofficeVO);
+            }
+        }
+        return list;
+    }
+
+    @Override
     public List<StatisBoxoffice> getStatis(String startDate, String endDate) {
         List<Map<String, Object>> statisData = getStatisData(startDate, endDate);
         List<StatisBoxoffice> list = new ArrayList<>();

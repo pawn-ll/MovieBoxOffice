@@ -7,10 +7,7 @@ import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,6 +53,13 @@ public class DailyBoxofficeController {
         }
         List<StatisBoxoffice> datesList = dailyBoxoffice.getDatesList(startDate, endDate);
         return Response.success(datesList);
+    }
+
+    @GetMapping("/day")
+    @ResponseBody
+    public Response<List<DailyBoxofficeVO>> getday(String date){
+        List<DailyBoxofficeVO> today = dailyBoxoffice.day(date);
+        return Response.success(today);
     }
 
 }
