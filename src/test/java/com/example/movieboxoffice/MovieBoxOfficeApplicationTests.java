@@ -25,9 +25,8 @@ class MovieBoxOfficeApplicationTests {
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
-        spiderTask.getDetailByUrl();
+//        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-//        statisTask.statisHistory(2024);
         System.out.println();
     }
 
