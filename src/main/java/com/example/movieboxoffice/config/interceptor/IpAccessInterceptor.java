@@ -24,6 +24,16 @@ public class IpAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String ipAddress = request.getRemoteAddr();
+        if(!redisService.sIsMember(MyConstant.WEB_SITE_VISITORS_TODAY, ipAddress)){
+            redisService.sAdd(MyConstant.WEB_SITE_VISITORS_TODAY, ipAddress);
+
+            Integer todayCount= (Integer)redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY);
+            redisService.set(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY, todayCount+1);
+
+            Integer count= (Integer)redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT);
+            redisService.set(MyConstant.WEB_SITE_VISITOR_COUNT, count+1);
+
+        }
         if(redisService.sIsMember(MyConstant.WHITE_IP_LIST, ipAddress)){
             return true;
         }

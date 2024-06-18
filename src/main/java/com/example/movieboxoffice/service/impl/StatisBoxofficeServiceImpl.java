@@ -34,7 +34,8 @@ public class StatisBoxofficeServiceImpl extends ServiceImpl<StatisBoxofficeMappe
         return baseMapper.selectList(new LambdaQueryWrapper<StatisBoxoffice>()
                 .eq(StatisBoxoffice::getStatisType,statisType)
                 .eq(StatisBoxoffice::getStatisInterval,statisInterval)
-                .gt(StatisBoxoffice::getStatisSumBoxoffice,1));
+                .gt(StatisBoxoffice::getStatisSumBoxoffice,1)
+                .orderByDesc(StatisBoxoffice::getStatisSumBoxoffice)) ;
     }
 
 }

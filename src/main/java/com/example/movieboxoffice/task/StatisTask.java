@@ -1,6 +1,12 @@
 package com.example.movieboxoffice.task;
 
+import com.example.movieboxoffice.entity.SiteVisitorCount;
+import com.example.movieboxoffice.entity.SiteVisitorDayCount;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
+import com.example.movieboxoffice.service.impl.SiteVisitorCountServiceImpl;
+import com.example.movieboxoffice.service.impl.SiteVisitorDayCountServiceImpl;
+import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +20,32 @@ import java.util.List;
 public class StatisTask {
 
     @Autowired
-    DailyBoxofficeServiceImpl dailyBoxofficeService;
+    private DailyBoxofficeServiceImpl dailyBoxofficeService;
+    @Autowired
+    private SiteVisitorCountServiceImpl siteVisitorCountService;
+    @Autowired
+    private SiteVisitorDayCountServiceImpl siteVisitorDayCountService;
+    @Autowired
+    private RedisService redisService;
 
+
+    @Scheduled(cron = "0 55 23 * * ?")
+    public void saveSiteVisitorCount() {
+        SiteVisitorCount siteVisitorCount = siteVisitorCountService.getSiteVisitorCount();
+        siteVisitorCount.setSiteVisitorCount((Integer) redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT));
+        siteVisitorCountService.updateById(siteVisitorCount);
+
+        SiteVisitorDayCount todayCount = siteVisitorDayCountService.getTodayCount();
+        if (todayCount == null){
+            todayCount = new SiteVisitorDayCount();
+            todayCount.setVisitDate(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD));
+            todayCount.setSiteVisitorCount((Integer) redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY));
+            siteVisitorDayCountService.save(todayCount);
+        }else {
+            todayCount.setSiteVisitorCount((Integer) redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY));
+            siteVisitorDayCountService.updateById(todayCount);
+        }
+    }
 
     @Scheduled(cron = "35 30 0 * * ?")
     public void statisDailyBoxoffice() {

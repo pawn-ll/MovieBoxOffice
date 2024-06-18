@@ -9,4 +9,10 @@ public interface MyConstant {
     String WHITE_IP_LIST = "whiteIpList";
 
     String BLACK_IP_LIST = "blackIpList";
+
+    String WEB_SITE_VISITOR_COUNT = "webSiteVisitorCount";
+
+    String WEB_SITE_VISITOR_COUNT_TODAY = "webSiteVisitorCountToday";
+
+    String WEB_SITE_VISITORS_TODAY = "webSiteVisitorsToday";
 }
