@@ -15,10 +15,14 @@ public class MyDateUtils {
     public static final String YY = "yyyy";
     public static final String YYMM = "yyyy-MM";
     public final static String YYMMDD = "yyyy-MM-dd";
-    public final static String YYMMDDHHMMSS = "yyyy-MM-dd hh:mm:ss";
+    public final static String YYMMDDHHMMSS = "yyyy-MM-dd HH:mm:ss";
+    public final static String HHMMSS = "HH:mm:ss";
 
     public static void main(String[] args) throws ParseException {
-        System.out.println(getNowDate(YYMMDD));
+//        System.out.println(getNowDate(YYMMDD));
+        String nowStringDate = MyDateUtils.getNowStringDate(MyDateUtils.HHMMSS);
+        nowStringDate = nowStringDate.substring(0, 2);
+        System.out.println( nowStringDate);
     }
 
     public static boolean afterNowDate(String date,String pattern){

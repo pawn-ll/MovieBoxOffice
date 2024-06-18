@@ -29,7 +29,7 @@ public class StatisTask {
     private RedisService redisService;
 
 
-    @Scheduled(cron = "0 55 23 * * ?")
+    @Scheduled(cron = "0 55 7/8 * * ?")
     public void saveSiteVisitorCount() {
         SiteVisitorCount siteVisitorCount = siteVisitorCountService.getSiteVisitorCount();
         siteVisitorCount.setSiteVisitorCount((Integer) redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT));
@@ -44,6 +44,11 @@ public class StatisTask {
         }else {
             todayCount.setSiteVisitorCount((Integer) redisService.get(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY));
             siteVisitorDayCountService.updateById(todayCount);
+        }
+        String nowHour = MyDateUtils.getNowStringDate(MyDateUtils.HHMMSS).substring(0, 2);
+        if (Integer.parseInt(nowHour) == 23){
+            redisService.delete(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY);
+            redisService.delete(MyConstant.WEB_SITE_VISITORS_TODAY);
         }
     }
 
