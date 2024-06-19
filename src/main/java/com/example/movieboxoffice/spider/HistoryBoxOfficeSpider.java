@@ -132,6 +132,7 @@ public class HistoryBoxOfficeSpider {
                 movieBoxoffice.setSumSplitBoxoffice(BigDecimal.ZERO);
                 movieBoxoffice.setMovieName(movieName);
                 movieBoxofficeService.save(movieBoxoffice);
+                set.add(movieName);
             }
 
         }

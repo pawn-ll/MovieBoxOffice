@@ -3,13 +3,11 @@ package com.example.movieboxoffice.spider.daily;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.movieboxoffice.entity.BoxOfficeWeb;
-import com.example.movieboxoffice.entity.DailyBoxoffice;
-import com.example.movieboxoffice.entity.DailySumBoxoffice;
-import com.example.movieboxoffice.entity.MovieDo;
+import com.example.movieboxoffice.entity.*;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import com.example.movieboxoffice.service.impl.DailySumBoxofficeServiceImpl;
+import com.example.movieboxoffice.service.impl.MovieBoxofficeServiceImpl;
 import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
 import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
@@ -47,6 +45,8 @@ public class DailyBoxOfficeSpider {
     private DailyBoxofficeServiceImpl dailyBoxofficeService;
     @Autowired
     private DailySumBoxofficeServiceImpl dailySumBoxofficeService;
+    @Autowired
+    private MovieBoxofficeServiceImpl movieBoxofficeService;
 
 
 //    public  Spider getDefaultSpider(){
@@ -106,8 +106,8 @@ public class DailyBoxOfficeSpider {
             List<BoxOfficeWeb> list = JSON.parseArray(str, BoxOfficeWeb.class);
 //            log.error("------------size:"+list.size());
             List<DailyBoxoffice> dailyBoxoffices = new ArrayList<>();
-            List<MovieDo> existsMovies = movieDoService.selectExistList();
-            Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieDo::getMovieName, MovieDo::getMovieCode));
+            List<MovieBoxoffice> existsMovies = movieBoxofficeService.getExistList();
+            Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieBoxoffice::getMovieName, MovieBoxoffice::getMovieCode));
             DailyBoxoffice dailyBoxoffice = null;
             for (BoxOfficeWeb boxOffice :list ){
                 dailyBoxoffice = new DailyBoxoffice();
@@ -190,8 +190,8 @@ public class DailyBoxOfficeSpider {
             String str = jsonObject.getString("list");
             List<BoxOfficeWeb> list = JSON.parseArray(str, BoxOfficeWeb.class);
             log.error("------------size:"+list.size());
-            List<MovieDo> existsMovies = movieDoService.selectExistList();
-            Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieDo::getMovieName, MovieDo::getMovieCode));
+            List<MovieBoxoffice> existsMovies = movieBoxofficeService.getExistList();
+            Map<String, Long> map = existsMovies.stream().collect(Collectors.toMap(MovieBoxoffice::getMovieName, MovieBoxoffice::getMovieCode));
             DailyBoxoffice dailyBoxoffice = null;
 
             for (BoxOfficeWeb boxOffice :list ){
