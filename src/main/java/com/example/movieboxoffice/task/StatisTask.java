@@ -47,7 +47,7 @@ public class StatisTask {
         }
         String nowHour = MyDateUtils.getNowStringDate(MyDateUtils.HHMMSS).substring(0, 2);
         if (Integer.parseInt(nowHour) == 23){
-            redisService.delete(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY);
+            redisService.set(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY,0);
             redisService.delete(MyConstant.WEB_SITE_VISITORS_TODAY);
         }
     }
