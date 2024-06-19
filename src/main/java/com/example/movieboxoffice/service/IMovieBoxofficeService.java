@@ -18,6 +18,8 @@ import java.util.List;
 @Service
 public interface IMovieBoxofficeService extends IService<MovieBoxoffice> {
 
+    List<MovieBoxoffice> getExistList();
+
     List<MovieBoxofficeVO> getTop20();
 
     void insertAll();

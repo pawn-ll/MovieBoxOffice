@@ -2,6 +2,7 @@ package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.StatisBoxofficeServiceImpl;
+import com.example.movieboxoffice.spider.HistoryBoxOfficeSpider;
 import com.example.movieboxoffice.task.SpiderTask;
 import com.example.movieboxoffice.task.StatisTask;
 import lombok.extern.log4j.Log4j2;
@@ -21,12 +22,15 @@ class MovieBoxOfficeApplicationTests {
     private RedisService redisService;
     @Autowired
     private StatisBoxofficeServiceImpl statisBoxofficeService;
+    @Autowired
+    private HistoryBoxOfficeSpider historySpider;
 
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
+        historySpider.dateSpider(2013);
         System.out.println();
     }
 

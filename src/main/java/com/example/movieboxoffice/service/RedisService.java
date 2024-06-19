@@ -80,6 +80,9 @@ public class RedisService {
         return redisTemplate.opsForSet().isMember(key, member);
     }
 
+    public Long sSize(String key) {
+        return redisTemplate.opsForSet().size(key);
+    }
     // 使用有序集合操作
     public void zAdd(String key, double score, Object member) {
         redisTemplate.opsForZSet().add(key, member, score);

@@ -34,6 +34,11 @@ public class MovieBoxofficeServiceImpl extends ServiceImpl<MovieBoxofficeMapper,
     private DailyBoxofficeServiceImpl dailyBoxofficeService;
 
     @Override
+    public List<MovieBoxoffice> getExistList() {
+        return baseMapper.selectList(new QueryWrapper<MovieBoxoffice>());
+    }
+
+    @Override
     public List<MovieBoxofficeVO> getTop20() {
         Page<MovieBoxoffice> movieBoxofficePage = this.baseMapper.selectPage(new Page<MovieBoxoffice>(0, 20), new LambdaQueryWrapper<MovieBoxoffice>()
                 .orderByDesc(MovieBoxoffice::getSumBoxoffice));
