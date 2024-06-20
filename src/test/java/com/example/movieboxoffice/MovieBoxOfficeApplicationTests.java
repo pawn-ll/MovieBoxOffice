@@ -1,6 +1,7 @@
 package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.service.RedisService;
+import com.example.movieboxoffice.service.impl.MovieBoxofficeServiceImpl;
 import com.example.movieboxoffice.service.impl.StatisBoxofficeServiceImpl;
 import com.example.movieboxoffice.spider.HistoryBoxOfficeSpider;
 import com.example.movieboxoffice.task.SpiderTask;
@@ -24,13 +25,16 @@ class MovieBoxOfficeApplicationTests {
     private StatisBoxofficeServiceImpl statisBoxofficeService;
     @Autowired
     private HistoryBoxOfficeSpider historySpider;
+    @Autowired
+    private MovieBoxofficeServiceImpl movieBoxofficeService;
 
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-        historySpider.dateSpider(2013);
+        historySpider.dateSpider(2014);
+
         System.out.println();
     }
 

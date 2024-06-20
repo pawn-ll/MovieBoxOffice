@@ -74,7 +74,7 @@ public class HistoryBoxOfficeSpider {
             Set<String> set = existsMovies.stream().map(MovieBoxoffice::getMovieName).collect(Collectors.toSet());
 
             MovieBoxoffice movieBoxoffice = null ;
-            System.out.println(all.size());
+            System.out.println("year: "+year+"----------"+all.size());
             for (int i = 1; i < all.size(); i++){
                 System.out.println(i);
                 String[] split = all.get(i).split(" <td>");
@@ -92,10 +92,10 @@ public class HistoryBoxOfficeSpider {
                     if (set.contains(movieName)) continue;
 
                     movieCode = YitIdHelper.nextId();
-                    int targetIndex = split[length - 2].indexOf("target");
-                    String href = split[length - 2].substring(hrefIndex + 6,targetIndex-2);
-                    String https = href.replace("http", "https");
                     try {
+                        int targetIndex = split[length - 2].indexOf("target");
+                        String href = split[length - 2].substring(hrefIndex + 6,targetIndex-2);
+                        String https = href.replace("http", "https");
                         getMovieDetail(https, movieName,  movieCode);
                     }catch ( Exception e){
                         log.error("电影详情爬取失败："+movieName);

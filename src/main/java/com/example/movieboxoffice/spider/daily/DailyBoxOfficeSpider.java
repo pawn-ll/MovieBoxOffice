@@ -131,6 +131,12 @@ public class DailyBoxOfficeSpider {
                     movieDo.setMovieDate(date);
                     movieDo.setMovieYear(Integer.parseInt(date.substring(0,4)));
                     movieDoService.save(movieDo);
+                    MovieBoxoffice movieBoxoffice = new MovieBoxoffice();
+                    movieBoxoffice.setMovieCode(movieCode);
+                    movieBoxoffice.setMovieName(dailyBoxoffice.getMovieName());
+                    movieBoxoffice.setSumBoxoffice(movieBoxofficeService.convertBoxoffice(dailyBoxoffice.getSumBoxoffice()));
+                    movieBoxoffice.setSumSplitBoxoffice(movieBoxofficeService.convertBoxoffice(dailyBoxoffice.getSumSplitBoxoffice()));
+                    movieBoxofficeService.save(movieBoxoffice);
                 }
                 dailyBoxoffice.setMovieCode(movieCode);
                 dailyBoxoffice.setDayBoxofficeRate(boxOffice.getSalesRateDesc());
