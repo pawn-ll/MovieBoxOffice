@@ -30,7 +30,7 @@ public class SecondDoServiceImpl extends ServiceImpl<SecondDoMapper, SecondDo> i
         if (page.getRecords().size()>0){
             id = page.getRecords().get(0).getId();
         }
-        Page<SecondDo> secondDoPage = this.baseMapper.selectPage(new Page<>(0, 70), new LambdaQueryWrapper<SecondDo>()
+        Page<SecondDo> secondDoPage = this.baseMapper.selectPage(new Page<>(0, 50), new LambdaQueryWrapper<SecondDo>()
                 .eq(SecondDo::getIsDo, 0)
                 .lt(id != null,SecondDo::getId,id)
                 .orderByDesc(SecondDo::getId));

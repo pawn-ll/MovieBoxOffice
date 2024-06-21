@@ -30,7 +30,7 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
 
     @Autowired
-    private DailyBoxofficeServiceImpl dailyBoxofficeService;
+    private MovieBoxofficeServiceImpl movieBoxofficeService;
 
     private final static String PREFIX =  "data:image/jpeg;base64,";
 
@@ -40,8 +40,11 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
         MovieDetail movieDetail = this.getOne(new LambdaQueryWrapper<MovieDetail>()
                 .eq(MovieDetail::getMovieCode,movieCode));
         MovieDetailVO movieDetailVO = new MovieDetailVO();
+        if (movieDetail == null) {
+            return null;
+        }
         BeanUtils.copyProperties(movieDetail,movieDetailVO);
-        movieDetailVO.setSumBoxOffice(dailyBoxofficeService.latestBoxoffice(movieCode).getSumBoxoffice());
+        movieDetailVO.setSumBoxOffice(movieBoxofficeService.getByCode(movieCode).getSumBoxoffice().toString());
         return movieDetailVO;
     }
 

@@ -103,6 +103,9 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     @Override
     public HistoygramVO getWeekHistoygram(Long movieCode) {
         String startDate = getReleaseDate(movieCode);
+        if (StringUtils.isEmpty(startDate)){
+            return null;
+        }
         String endDate = MyDateUtils.getAddDate(startDate, MyDateUtils.YYMMDD, 7);
         return getDatesHistoygram(startDate, endDate, movieCode);
     }
