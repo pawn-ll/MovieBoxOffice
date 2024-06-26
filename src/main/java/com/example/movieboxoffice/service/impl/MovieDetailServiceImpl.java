@@ -1,10 +1,10 @@
 package com.example.movieboxoffice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.MoviePoster;
 import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.mapper.MovieDetailMapper;
@@ -15,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,6 +32,8 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
     @Autowired
     private MovieBoxofficeServiceImpl movieBoxofficeService;
+    @Autowired
+    private MoviePosterServiceImpl moviePosterService;
 
     private final static String PREFIX =  "data:image/jpeg;base64,";
 
@@ -44,6 +47,7 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
             return null;
         }
         BeanUtils.copyProperties(movieDetail,movieDetailVO);
+        movieDetailVO.setPosterBase64(moviePosterService.getPoster(movieDetail.getMovieCode()).getPosterBase64());
         movieDetailVO.setSumBoxOffice(movieBoxofficeService.getByCode(movieCode).getSumBoxoffice().toString());
         return movieDetailVO;
     }
@@ -56,13 +60,15 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
     @Override
     public void setPosterBase64() {
-        List<MovieDetail> list = getList();
-        list.forEach(movieDetail -> {
+        List<MoviePoster> nullPosterList = moviePosterService.getNullPosterList();
+        nullPosterList.forEach(movie -> {
             try {
-                String base64 = Img2Base64Utils.imgToBase64(movieDetail.getPoster());
+                MovieDetailVO detail = getDeatail(movie.getMovieCode());
+                String base64 = Img2Base64Utils.imgToBase64(detail.getPoster());
                 if (!StringUtils.isEmpty(base64)) {
-                    movieDetail.setPosterBase64(PREFIX + base64);
-                    this.baseMapper.updateById(movieDetail);
+                    movie.setPosterBase64(PREFIX + base64);
+                    moviePosterService.update(movie ,new LambdaQueryWrapper<MoviePoster>()
+                            .eq(MoviePoster::getMovieCode,movie.getMovieCode()));
                 }
 
             } catch (Exception e) {
@@ -72,22 +78,40 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
     }
 
     @Override
-    public Page<MovieDetail> getDetailBySearch(MovieDetailPageRequest request) {
+    public Page<MovieDetailVO> getDetailBySearch(MovieDetailPageRequest request) {
         Page<MovieDetail> movieDetailPage = this.baseMapper.selectPage(
                 new Page<>(request.getCurrent(), request.getSize()),
                 new LambdaQueryWrapper<MovieDetail>()
                         .likeRight(MovieDetail::getMovieName, request.getMovieName()));
+        Page<MovieDetailVO> movieDetailVOPage = new Page<>(request.getCurrent(), request.getSize());
+        List<MovieDetailVO> movieDetailVOList =  new ArrayList<>();
+        if (movieDetailPage.getRecords().size()>0){
+            MovieDetailVO movieDetailVO = null;
+            for ( MovieDetail record : movieDetailPage.getRecords()){
+                movieDetailVO = new MovieDetailVO();
+                BeanUtils.copyProperties(record,movieDetailVO);
+                movieDetailVO.setPosterBase64(moviePosterService.getPoster(record.getMovieCode()).getPosterBase64());
+                movieDetailVOList.add(movieDetailVO);
+            }
+        }
+        movieDetailVOPage.setRecords(movieDetailVOList);
+        return movieDetailVOPage;
+    }
+
+
+    public Page<MovieDetail> getDetailPage(int current, int size ) {
+        Page<MovieDetail> movieDetailPage = this.baseMapper.selectPage(
+                new Page<>(current, size),
+                new LambdaQueryWrapper<MovieDetail>());
 
         return movieDetailPage;
     }
-
-
-    private List<MovieDetail> getList(){
-        IPage<MovieDetail> movieDetailIPage = this.baseMapper.selectPage(
-                new Page<>(0,50),
-                new LambdaQueryWrapper<MovieDetail>()
-                        .isNull(MovieDetail::getPosterBase64)
-                        .orderByAsc(MovieDetail::getId));
-        return  movieDetailIPage.getRecords();
-    }
+//    private List<MovieDetail> getList(){
+//        IPage<MovieDetail> movieDetailIPage = this.baseMapper.selectPage(
+//                new Page<>(0,50),
+//                new LambdaQueryWrapper<MovieDetail>()
+//                        .isNull(MovieDetail::getPosterBase64)
+//                        .orderByAsc(MovieDetail::getId));
+//        return  movieDetailIPage.getRecords();
+//    }
 }

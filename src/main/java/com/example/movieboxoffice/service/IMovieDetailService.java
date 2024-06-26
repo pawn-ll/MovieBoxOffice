@@ -23,5 +23,5 @@ public interface IMovieDetailService extends IService<MovieDetail> {
 
     void setPosterBase64();
 
-    Page<MovieDetail> getDetailBySearch(MovieDetailPageRequest request);
+    Page<MovieDetailVO> getDetailBySearch(MovieDetailPageRequest request);
 }

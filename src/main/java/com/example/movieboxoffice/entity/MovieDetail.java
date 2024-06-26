@@ -84,10 +84,6 @@ public class MovieDetail implements Serializable {
      */
     private String poster;
 
-    /**
-     * 海报base64
-     */
-    private String posterBase64;
 
     /**
      * 创建时间

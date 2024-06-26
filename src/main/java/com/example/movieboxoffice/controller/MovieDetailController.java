@@ -1,7 +1,6 @@
 package com.example.movieboxoffice.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.movieboxoffice.entity.MovieDetail;
 import com.example.movieboxoffice.entity.Response;
 import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
@@ -33,8 +32,8 @@ public class MovieDetailController {
 
     @PostMapping("/search")
     @ResponseBody
-    public Response<Page<MovieDetail>> getDetailBySearch(@RequestBody MovieDetailPageRequest request){
-        Page<MovieDetail> detailBySearch = movieDetailService.getDetailBySearch(request);
+    public Response<Page<MovieDetailVO>> getDetailBySearch(@RequestBody MovieDetailPageRequest request){
+        Page<MovieDetailVO> detailBySearch = movieDetailService.getDetailBySearch(request);
         return Response.success(detailBySearch);
     }
 
