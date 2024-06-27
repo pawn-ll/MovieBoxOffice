@@ -47,7 +47,6 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
             return null;
         }
         BeanUtils.copyProperties(movieDetail,movieDetailVO);
-        movieDetailVO.setPosterBase64(moviePosterService.getPoster(movieDetail.getMovieCode()).getPosterBase64());
         movieDetailVO.setSumBoxOffice(movieBoxofficeService.getByCode(movieCode).getSumBoxoffice().toString());
         return movieDetailVO;
     }

@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.movieboxoffice.entity.DoubanSuggest;
 import com.example.movieboxoffice.entity.MovieDetail;
+import com.example.movieboxoffice.entity.MoviePoster;
 import com.example.movieboxoffice.entity.SecondDo;
 import com.example.movieboxoffice.enums.MovieDetailLength;
 import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
 import com.example.movieboxoffice.service.impl.MovieDoServiceImpl;
+import com.example.movieboxoffice.service.impl.MoviePosterServiceImpl;
 import com.example.movieboxoffice.service.impl.SecondDoServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,8 @@ public class MovieDetailDoubanService {
     private MovieDoServiceImpl movieDoService;
     @Autowired
     private SecondDoServiceImpl secondDoService;
-
+    @Autowired
+    private MoviePosterServiceImpl moviePosterService;
 
     public void getMovieDetail(String movieName ,Long movieCode , boolean second) {
         try {
@@ -200,6 +203,10 @@ public class MovieDetailDoubanService {
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
             movieDetailService.save(movieDetail);
+            MoviePoster moviePoster = new MoviePoster();
+            moviePoster.setMovieName(movieName);
+            moviePoster.setMovieCode(movieCode);
+            moviePosterService.save(moviePoster);
         }
 
     }
