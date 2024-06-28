@@ -94,6 +94,10 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
             }
         }
         movieDetailVOPage.setRecords(movieDetailVOList);
+        movieDetailVOPage.setTotal(movieDetailPage.getTotal());
+        movieDetailVOPage.setPages(movieDetailPage.getPages());
+        movieDetailVOPage.setCurrent(movieDetailPage.getCurrent());
+        movieDetailVOPage.setSize(movieDetailPage.getSize());
         return movieDetailVOPage;
     }
 
