@@ -194,6 +194,9 @@ public class DailyBoxofficeServiceImpl extends ServiceImpl<DailyBoxofficeMapper,
     @Override
     public List<DailyBoxofficeVO> day(String date) {
         List<DailyBoxofficeVO> list = new ArrayList<>();
+        if(date.equals(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD))){
+            return today();
+        }
         if (MyDateUtils.afterNowDate(date , MyDateUtils.YYMMDD)){
             date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
         }
