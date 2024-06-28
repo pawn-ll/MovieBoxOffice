@@ -60,7 +60,7 @@ public class SpiderTask {
     }
 
     //    更新数据库1小时一次
-    @Scheduled(cron = "0 59 * * * ?")
+    @Scheduled(cron = "55 59 * * * ?")
     @Transactional(rollbackFor =Exception.class)
     public void saveDailyData() {
         log.info("---------每日票房保存------------");
