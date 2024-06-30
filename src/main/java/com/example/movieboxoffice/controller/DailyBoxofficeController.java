@@ -57,7 +57,7 @@ public class DailyBoxofficeController {
 
     @GetMapping("/day")
     @ResponseBody
-    public Response<List<DailyBoxofficeVO>> getday(String date){
+    public Response<List<DailyBoxofficeVO>> getDay(String date){
         List<DailyBoxofficeVO> today = dailyBoxoffice.day(date);
         return Response.success(today);
     }

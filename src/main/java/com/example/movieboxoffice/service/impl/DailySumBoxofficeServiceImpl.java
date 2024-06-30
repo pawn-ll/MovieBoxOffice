@@ -62,6 +62,9 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
 
     @Override
     public DailySumBoxofficeVO day(String date) {
+        if(date.equals(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD))){
+            return today();
+        }
         if (MyDateUtils.afterNowDate(date , MyDateUtils.YYMMDD)){
             date = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
         }
