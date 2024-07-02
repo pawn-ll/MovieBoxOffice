@@ -1,11 +1,9 @@
 package com.example.movieboxoffice;
 
 import com.example.movieboxoffice.service.RedisService;
-import com.example.movieboxoffice.service.impl.MovieBoxofficeServiceImpl;
-import com.example.movieboxoffice.service.impl.MovieDetailServiceImpl;
-import com.example.movieboxoffice.service.impl.MoviePosterServiceImpl;
-import com.example.movieboxoffice.service.impl.StatisBoxofficeServiceImpl;
+import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.HistoryBoxOfficeSpider;
+import com.example.movieboxoffice.spider.detail.ActorDetailSpider;
 import com.example.movieboxoffice.task.SpiderTask;
 import com.example.movieboxoffice.task.StatisTask;
 import lombok.extern.log4j.Log4j2;
@@ -33,13 +31,18 @@ class MovieBoxOfficeApplicationTests {
     private MovieDetailServiceImpl movieDetailService;
     @Autowired
     private MoviePosterServiceImpl moviePosterService;
+    @Autowired
+    private ActorServiceImpl actorService;
+    @Autowired
+    private ActorDetailSpider actorDetailSpider;
 
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-
+//        actorService.historyInsert();
+        actorDetailSpider.actorDetailSpider();
 
         System.out.println();
     }

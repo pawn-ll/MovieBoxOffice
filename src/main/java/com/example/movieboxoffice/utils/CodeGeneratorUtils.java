@@ -26,7 +26,7 @@ public class CodeGeneratorUtils {
                             .pathInfo(Collections.singletonMap(OutputFile.xml, "D:\\Projects\\MovieBoxOffice\\src\\main\\resources\\mapper")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("t_movie_poster") // 设置需要生成的表名
+                    builder.addInclude("t_actor") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine())
