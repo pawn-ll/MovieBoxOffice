@@ -4,6 +4,7 @@ import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.HistoryBoxOfficeSpider;
 import com.example.movieboxoffice.spider.detail.ActorDetailSpider;
+import com.example.movieboxoffice.task.ActorTask;
 import com.example.movieboxoffice.task.SpiderTask;
 import com.example.movieboxoffice.task.StatisTask;
 import lombok.extern.log4j.Log4j2;
@@ -35,6 +36,8 @@ class MovieBoxOfficeApplicationTests {
     private ActorServiceImpl actorService;
     @Autowired
     private ActorDetailSpider actorDetailSpider;
+    @Autowired
+    private ActorTask actorTask;
 
     @Test
     public void testService() throws InterruptedException {
@@ -42,7 +45,7 @@ class MovieBoxOfficeApplicationTests {
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
 //        actorService.historyInsert();
-        actorDetailSpider.actorDetailSpider();
+        actorTask.actorDetailSpider();
 
         System.out.println();
     }

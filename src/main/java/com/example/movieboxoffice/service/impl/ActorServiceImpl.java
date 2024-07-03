@@ -45,11 +45,12 @@ public class ActorServiceImpl extends ServiceImpl<ActorMapper, Actor> implements
 
     @Override
     public void historyInsert() {
-        int page = 2;
+        int page = 1;
         int size = 500;
         List<Actor> existActor = existActor();
         Set<String> actorSet = existActor.stream().map(Actor::getName).collect(Collectors.toSet());
         while (size==500) {
+            System.out.println(page);
             Page<MovieDetail> detailPage = movieDetailService.getDetailPage(page, size);
             size = detailPage.getRecords().size();
             page++;

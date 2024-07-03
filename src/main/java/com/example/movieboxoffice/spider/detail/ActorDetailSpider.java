@@ -36,7 +36,7 @@ public class ActorDetailSpider {
             if (doubanSuggest != null) {
                 getSuggestMovieDetail(doubanSuggest.getUrl(), doubanSuggest.getImg(), actor);
             }
-            Thread.sleep(3000);
+            Thread.sleep(5000);
 
         }
 //        Actor actor = new Actor();
