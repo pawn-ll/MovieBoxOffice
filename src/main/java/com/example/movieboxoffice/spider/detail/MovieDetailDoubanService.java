@@ -302,6 +302,10 @@ public class MovieDetailDoubanService {
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(code);
             movieDetailService.save(movieDetail);
+            MoviePoster moviePoster = new MoviePoster();
+            moviePoster.setMovieName(movieName);
+            moviePoster.setMovieCode(movieCode);
+            moviePosterService.save(moviePoster);
         }
 
     }
