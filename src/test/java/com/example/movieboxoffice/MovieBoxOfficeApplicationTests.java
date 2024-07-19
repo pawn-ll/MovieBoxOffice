@@ -81,10 +81,11 @@ class MovieBoxOfficeApplicationTests {
         System.out.println("耗时"+duration + "ms" );
     }
 
-//    @Test
-//    public void reCrawl(){
+    @Test
+    public void reCrawl(){
+        spiderTask.reCrawlDate("2024-07-17");
 //        spiderTask.reCrawlMonth(2024, 5);
-//    }
+    }
 
 
 

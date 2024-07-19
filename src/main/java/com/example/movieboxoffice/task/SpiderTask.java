@@ -185,5 +185,11 @@ public class SpiderTask {
         dailyBoxOfficeSpider.dateSpider(date);
     }
 
+    public void reCrawlDate(String date){
+        dailyBoxofficeService.deleteByDates(date, date);
+        dailySumBoxofficeService.deleteByDates(date, date);
+        spiderCrawl(date);
+    }
+
 
 }
