@@ -18,4 +18,6 @@ public interface IMoviePosterService extends IService<MoviePoster> {
     MoviePoster getPoster(Long movieCode);
 
     List<MoviePoster> getNullPosterList();
+
+    Boolean isExists(String name);
 }

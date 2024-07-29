@@ -38,4 +38,9 @@ public class MoviePosterServiceImpl extends ServiceImpl<MoviePosterMapper, Movie
         return  moviePage.getRecords();
     }
 
+    @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<MoviePoster>().eq(MoviePoster::getMovieName,name))>0;
+    }
 }

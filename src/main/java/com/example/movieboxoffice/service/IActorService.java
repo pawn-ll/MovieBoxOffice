@@ -22,4 +22,6 @@ public interface IActorService extends IService<Actor> {
 
     Page<Actor> getDoList();
 
+    Boolean isExists(String name);
+
 }

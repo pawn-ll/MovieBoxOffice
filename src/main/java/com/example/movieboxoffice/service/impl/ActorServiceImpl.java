@@ -29,6 +29,12 @@ public class ActorServiceImpl extends ServiceImpl<ActorMapper, Actor> implements
     private MovieDetailServiceImpl movieDetailService;
 
     @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<Actor>().eq(Actor::getName,name))>0;
+    }
+
+    @Override
     public Page<Actor> getDoList() {
         Page<Actor> actorPage = baseMapper.selectPage(new Page<>(1, 1),
                 new LambdaQueryWrapper<Actor>()

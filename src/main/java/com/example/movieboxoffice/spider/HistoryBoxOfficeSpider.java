@@ -102,7 +102,8 @@ public class HistoryBoxOfficeSpider {
                         SecondDo secondDo = new SecondDo();
                         secondDo.setMovieName(movieName);
                         secondDo.setMovieCode(movieCode);
-                        secondDoService.save(secondDo);
+                        if (!secondDoService.isExists(movieName))
+                            secondDoService.save(secondDo);
                     }
 
                 } else {
@@ -112,7 +113,8 @@ public class HistoryBoxOfficeSpider {
                     SecondDo secondDo = new SecondDo();
                     secondDo.setMovieName(movieName);
                     secondDo.setMovieCode(movieCode);
-                    secondDoService.save(secondDo);
+                    if (!secondDoService.isExists(movieName))
+                        secondDoService.save(secondDo);
 
                 }
 
@@ -131,7 +133,7 @@ public class HistoryBoxOfficeSpider {
                 movieBoxoffice.setSumBoxoffice(boxOfficeBigDecimal);
                 movieBoxoffice.setSumSplitBoxoffice(BigDecimal.ZERO);
                 movieBoxoffice.setMovieName(movieName);
-                movieBoxofficeService.save(movieBoxoffice);
+                if (!movieBoxofficeService.isExists(movieName)) movieBoxofficeService.save(movieBoxoffice);
                 set.add(movieName);
             }
 
@@ -233,7 +235,8 @@ public class HistoryBoxOfficeSpider {
 
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
-            movieDetailService.save(movieDetail);
+            if(!movieDetailService.isExists(movieName))
+                movieDetailService.save(movieDetail);
         }
     }
 

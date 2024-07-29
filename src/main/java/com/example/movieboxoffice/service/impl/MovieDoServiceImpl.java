@@ -55,6 +55,12 @@ public class MovieDoServiceImpl extends ServiceImpl<MovieDoMapper, MovieDo> impl
 
 
     @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<MovieDo>().eq(MovieDo::getMovieName,name))>0;
+    }
+
+    @Override
     public void verifyMovieCode() {
         List<MovieDo> movieDos = this.baseMapper.selectList(
                 new LambdaQueryWrapper<MovieDo>()

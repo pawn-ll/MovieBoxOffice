@@ -23,4 +23,6 @@ public interface ISecondDoService extends IService<SecondDo> {
 
     List<SecondDo> selectUrlList();
 
+    Boolean isExists(String name);
+
 }

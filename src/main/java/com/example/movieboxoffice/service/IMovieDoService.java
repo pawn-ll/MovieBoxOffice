@@ -23,4 +23,6 @@ public interface IMovieDoService extends IService<MovieDo> {
 
     void verifyMovieCode();
 
+    Boolean isExists(String name);
+
 }

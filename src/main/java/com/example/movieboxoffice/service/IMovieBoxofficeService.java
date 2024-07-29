@@ -26,4 +26,6 @@ public interface IMovieBoxofficeService extends IService<MovieBoxoffice> {
 
     MovieBoxoffice getByCode(Long movieCode);
 
+    Boolean isExists(String name);
+
 }

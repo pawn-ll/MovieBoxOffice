@@ -59,4 +59,10 @@ public class SecondDoServiceImpl extends ServiceImpl<SecondDoMapper, SecondDo> i
                         .likeRight(SecondDo::getDetailUrl,"https://movie.douban.com"))
                 .getRecords();
     }
+
+    @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<SecondDo>().eq(SecondDo::getMovieName,name))>0;
+    }
 }

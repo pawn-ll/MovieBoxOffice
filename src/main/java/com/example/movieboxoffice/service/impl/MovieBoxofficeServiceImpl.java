@@ -79,6 +79,12 @@ public class MovieBoxofficeServiceImpl extends ServiceImpl<MovieBoxofficeMapper,
     }
 
     @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<MovieBoxoffice>().eq(MovieBoxoffice::getMovieName,name))>0;
+    }
+
+    @Override
     public MovieBoxoffice getByCode(Long movieCode) {
         return baseMapper.selectOne(new QueryWrapper<MovieBoxoffice>().eq("movie_code",movieCode));
     }

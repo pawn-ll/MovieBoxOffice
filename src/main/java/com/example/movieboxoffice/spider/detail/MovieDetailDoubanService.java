@@ -56,7 +56,8 @@ public class MovieDetailDoubanService {
                     SecondDo secondDo = new SecondDo();
                     secondDo.setMovieCode(movieCode);
                     secondDo.setMovieName(movieName);
-                    secondDoService.save(secondDo);
+                    if (!secondDoService.isExists(movieName))
+                        secondDoService.save(secondDo);
                     movieDoService.doMovie(movieCode);
                 }
 
@@ -68,7 +69,8 @@ public class MovieDetailDoubanService {
                 SecondDo secondDo = new SecondDo();
                 secondDo.setMovieCode(movieCode);
                 secondDo.setMovieName(movieName);
-                secondDoService.save(secondDo);
+                if (!secondDoService.isExists(movieName))
+                    secondDoService.save(secondDo);
                 movieDoService.doMovie(movieCode);
             }
         }
@@ -202,11 +204,13 @@ public class MovieDetailDoubanService {
             }
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(movieCode);
-            movieDetailService.save(movieDetail);
+            if (!movieDetailService.isExists(movieName))
+                movieDetailService.save(movieDetail);
             MoviePoster moviePoster = new MoviePoster();
             moviePoster.setMovieName(movieName);
             moviePoster.setMovieCode(movieCode);
-            moviePosterService.save(moviePoster);
+            if (!moviePosterService.isExists(movieName))
+                moviePosterService.save(moviePoster);
         }
 
     }
@@ -301,11 +305,13 @@ public class MovieDetailDoubanService {
             }
             movieDetail.setPoster(poster);
             movieDetail.setMovieCode(code);
-            movieDetailService.save(movieDetail);
+            if (!movieDetailService.isExists(movieName))
+                movieDetailService.save(movieDetail);
             MoviePoster moviePoster = new MoviePoster();
-            moviePoster.setMovieName(movieName);
-            moviePoster.setMovieCode(movieCode);
-            moviePosterService.save(moviePoster);
+            moviePoster.setMovieName(name);
+            moviePoster.setMovieCode(code);
+            if (!moviePosterService.isExists(movieName))
+                moviePosterService.save(moviePoster);
         }
 
     }

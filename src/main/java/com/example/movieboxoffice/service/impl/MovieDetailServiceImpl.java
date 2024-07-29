@@ -77,6 +77,12 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
     }
 
     @Override
+    public Boolean isExists(String name) {
+        return baseMapper.selectCount(
+                new LambdaQueryWrapper<MovieDetail>().eq(MovieDetail::getMovieName,name))>0;
+    }
+
+    @Override
     public Page<MovieDetailVO> getDetailBySearch(MovieDetailPageRequest request) {
         Page<MovieDetail> movieDetailPage = this.baseMapper.selectPage(
                 new Page<>(request.getCurrent(), request.getSize()),

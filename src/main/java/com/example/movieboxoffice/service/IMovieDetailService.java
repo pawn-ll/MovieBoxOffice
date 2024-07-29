@@ -24,4 +24,6 @@ public interface IMovieDetailService extends IService<MovieDetail> {
     void setPosterBase64();
 
     Page<MovieDetailVO> getDetailBySearch(MovieDetailPageRequest request);
+
+    Boolean isExists(String name);
 }
