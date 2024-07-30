@@ -7,6 +7,7 @@ import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public class DailyBoxofficeController {
 
     @Autowired
     private DailyBoxofficeServiceImpl dailyBoxoffice;
+    @Value("${recentDays}")
+    private Integer days;
 
     @GetMapping("/today")
     public Response<List<DailyBoxofficeVO>> getToday(){
@@ -49,7 +52,7 @@ public class DailyBoxofficeController {
     public Response<List<StatisBoxoffice>> getWeekList(String startDate , String endDate){
         if (startDate ==null || endDate ==null){
             endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);
-            startDate = MyDateUtils.getAddDate(endDate , MyDateUtils.YYMMDD, -7);
+            startDate = MyDateUtils.getAddDate(endDate , MyDateUtils.YYMMDD, -days);
         }
         List<StatisBoxoffice> datesList = dailyBoxoffice.getDatesList(startDate, endDate);
         return Response.success(datesList);

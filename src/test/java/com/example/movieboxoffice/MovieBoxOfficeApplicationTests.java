@@ -83,7 +83,7 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void reCrawl(){
-        spiderTask.reCrawlDate("2024-07-29");
+        spiderTask.reCrawlDate("2024-07-30");
 //        spiderTask.reCrawlMonth(2024, 5);
     }
 

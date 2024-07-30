@@ -6,6 +6,7 @@ import com.example.movieboxoffice.entity.vo.HistoygramVO;
 import com.example.movieboxoffice.service.impl.DailySumBoxofficeServiceImpl;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,6 +26,8 @@ public class DailySumBoxofficeController {
 
     @Autowired
     private DailySumBoxofficeServiceImpl dailySumBoxoffice;
+    @Value("${recentDays}")
+    private Integer days;
 
     @GetMapping("/today")
     @ResponseBody
@@ -36,7 +39,7 @@ public class DailySumBoxofficeController {
     @GetMapping("/histoygram")
     public Response<HistoygramVO> getDatesHistoygram(){
         String endDate = MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD);;
-        String startDate = MyDateUtils.getAddDate(endDate, MyDateUtils.YYMMDD, -15);
+        String startDate = MyDateUtils.getAddDate(endDate, MyDateUtils.YYMMDD, -days);
         HistoygramVO histoygramVO = dailySumBoxoffice.getDatesHistoygram(startDate, endDate);
         return Response.success(histoygramVO);
     }
