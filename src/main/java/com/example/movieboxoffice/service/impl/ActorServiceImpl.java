@@ -36,17 +36,16 @@ public class ActorServiceImpl extends ServiceImpl<ActorMapper, Actor> implements
 
     @Override
     public Page<Actor> getDoList() {
-        Page<Actor> actorPage = baseMapper.selectPage(new Page<>(1, 1),
-                new LambdaQueryWrapper<Actor>()
-                        .isNotNull(Actor::getIntroduction)
-                        .orderByDesc(Actor::getId));
+//        Page<Actor> actorPage = baseMapper.selectPage(new Page<>(1, 1),
+//                new LambdaQueryWrapper<Actor>()
+//                        .isNull(Actor::getIntroduction));
         Integer id = null ;
-        if (actorPage.getRecords().size()>0) {
-            id = actorPage.getRecords().get(0).getId();
-        }
+//        if (actorPage.getRecords().size()>0) {
+//            id = actorPage.getRecords().get(0).getId();
+//        }
         return baseMapper.selectPage(new Page<>(1,100),new LambdaQueryWrapper<Actor>()
                 .isNull(Actor::getIntroduction)
-                .gt(id!=null,Actor::getId,id)
+                .ge(id!=null,Actor::getId,id)
                 .orderByAsc(Actor::getId)
         );
     }

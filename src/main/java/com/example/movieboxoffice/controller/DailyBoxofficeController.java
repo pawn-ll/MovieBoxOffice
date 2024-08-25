@@ -8,6 +8,7 @@ import com.example.movieboxoffice.service.impl.DailyBoxofficeServiceImpl;
 import com.example.movieboxoffice.utils.MyDateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/dailyBoxoffice")
+@RefreshScope
 public class DailyBoxofficeController {
 
     @Autowired

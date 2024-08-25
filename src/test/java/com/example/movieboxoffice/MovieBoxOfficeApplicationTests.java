@@ -42,10 +42,10 @@ class MovieBoxOfficeApplicationTests {
     @Test
     public void testService() throws InterruptedException {
 //        spiderTask.updateSumBoxoffice();
-        spiderTask.getDetailByUrl();
+//        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
 //        actorService.historyInsert();
-//        actorTask.actorDetailSpider();
+        actorTask.actorDetailSpider();
 
         System.out.println();
     }
@@ -83,7 +83,7 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void reCrawl(){
-        spiderTask.reCrawlDate("2024-07-30");
+        spiderTask.reCrawlDate("2024-08-22");
 //        spiderTask.reCrawlMonth(2024, 5);
     }
 
