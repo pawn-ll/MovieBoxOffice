@@ -4,6 +4,7 @@ import com.example.movieboxoffice.entity.Ip;
 import com.example.movieboxoffice.entity.SiteVisitorCount;
 import com.example.movieboxoffice.entity.SiteVisitorDayCount;
 import com.example.movieboxoffice.service.impl.IpServiceImpl;
+
 import com.example.movieboxoffice.service.impl.SiteVisitorCountServiceImpl;
 import com.example.movieboxoffice.service.impl.SiteVisitorDayCountServiceImpl;
 import com.example.movieboxoffice.utils.MyConstant;
@@ -25,8 +26,13 @@ public class StartupRunner {
     @Autowired
     private SiteVisitorDayCountServiceImpl siteVisitorDayCountService;
 
+
+    /**
+     * 在Bean初始化完成后执行的方法
+     * 该方法主要负责将IP黑名单和白名单加载到Redis中，并初始化网站访问者计数
+     */
     @PostConstruct
-    public void init(){
+    public void init() {
         List<Ip> blackIpList = ipService.getBlackIpList();
         if (blackIpList != null && blackIpList.size() > 0) {
             for (Ip ip : blackIpList) {
@@ -49,9 +55,10 @@ public class StartupRunner {
             SiteVisitorDayCount siteVisitorDayCount = siteVisitorDayCountService.getTodayCount();
             if (siteVisitorDayCount != null) {
                 redisService.set(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY, siteVisitorDayCount.getSiteVisitorCount());
-            }else{
+            } else {
                 redisService.set(MyConstant.WEB_SITE_VISITOR_COUNT_TODAY, 0);
             }
         }
     }
+
 }

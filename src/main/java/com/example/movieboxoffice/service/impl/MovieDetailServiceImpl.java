@@ -95,7 +95,7 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
             for ( MovieDetail record : movieDetailPage.getRecords()){
                 movieDetailVO = new MovieDetailVO();
                 BeanUtils.copyProperties(record,movieDetailVO);
-                movieDetailVO.setPosterBase64(moviePosterService.getPoster(record.getMovieCode()).getPosterBase64());
+                movieDetailVO.setPosterBase64(moviePosterService.getPoster(record.getMovieCode()));
                 movieDetailVOList.add(movieDetailVO);
             }
         }
@@ -114,6 +114,13 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
                 new LambdaQueryWrapper<MovieDetail>());
 
         return movieDetailPage;
+    }
+
+    public List<MovieDetail> getDetails(String time){
+        if(time == null)
+            return null;
+        return this.baseMapper.selectList(new LambdaQueryWrapper<MovieDetail>()
+                .ge(MovieDetail::getCreateTime,time));
     }
 //    private List<MovieDetail> getList(){
 //        IPage<MovieDetail> movieDetailIPage = this.baseMapper.selectPage(

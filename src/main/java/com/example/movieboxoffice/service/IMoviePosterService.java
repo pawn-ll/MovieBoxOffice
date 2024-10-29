@@ -15,9 +15,13 @@ import java.util.List;
  */
 public interface IMoviePosterService extends IService<MoviePoster> {
 
-    MoviePoster getPoster(Long movieCode);
+    String getPoster(Long movieCode);
 
     List<MoviePoster> getNullPosterList();
 
     Boolean isExists(String name);
+
+    List<MoviePoster> getPosterList(Integer page, Integer size);
+
+    Integer hotMoviePoster();
 }

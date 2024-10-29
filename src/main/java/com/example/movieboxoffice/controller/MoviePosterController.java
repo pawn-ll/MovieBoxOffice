@@ -1,6 +1,5 @@
 package com.example.movieboxoffice.controller;
 
-import com.example.movieboxoffice.entity.MoviePoster;
 import com.example.movieboxoffice.entity.Response;
 import com.example.movieboxoffice.service.impl.MoviePosterServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,14 @@ public class MoviePosterController {
     private MoviePosterServiceImpl moviePosterService;
 
     @GetMapping("/poster")
-    public Response<MoviePoster> getMoviePoster(@RequestParam Long movieCode){
-        MoviePoster poster= moviePosterService.getPoster(movieCode);
-        return Response.success(poster);
+    public Response<String> getMoviePoster(@RequestParam Long movieCode){
+
+        return Response.success(moviePosterService.getPoster(movieCode));
+    }
+
+    @GetMapping("/poster/hot")
+    public Response<Integer> hotMoviePoster(){
+        return Response.success(moviePosterService.hotMoviePoster());
     }
 
 }
