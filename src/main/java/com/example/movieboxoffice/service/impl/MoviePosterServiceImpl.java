@@ -38,6 +38,7 @@ public class MoviePosterServiceImpl extends ServiceImpl<MoviePosterMapper, Movie
         if (poster == null){
             poster = baseMapper.selectOne(new LambdaQueryWrapper<MoviePoster>()
                     .eq(MoviePoster::getMovieCode, movieCode)).getPosterBase64();
+            redisService.set(movieCode.toString(),poster);
          }
 
         return poster;
