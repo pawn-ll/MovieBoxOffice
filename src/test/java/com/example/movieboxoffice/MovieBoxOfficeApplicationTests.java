@@ -45,8 +45,8 @@ class MovieBoxOfficeApplicationTests {
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
 //        actorService.historyInsert();
-        actorTask.actorDetailSpider();
-
+//        actorTask.actorDetailSpider();
+//        actorService.DateIntervalInsert("2024-07-03");
         System.out.println();
     }
 
@@ -83,7 +83,8 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void reCrawl(){
-        spiderTask.reCrawlDate("2024-08-22");
+        spiderTask.reCrawlDate("2024-09-18");
+        spiderTask.reCrawlDate("2024-09-19");
 //        spiderTask.reCrawlMonth(2024, 5);
     }
 
