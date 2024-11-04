@@ -8,6 +8,8 @@ import com.example.movieboxoffice.service.impl.StatisBoxofficeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,6 +39,18 @@ public class StatisBoxofficeController {
             list = statisBoxofficeService.getStatisList(request.getStatisType(), request.getStatisInterval());
         }
         return Response.success(list);
+    }
+
+    @PostMapping("/export")
+    @ResponseBody
+    public void outputStatis(@RequestBody StatisRequest request, HttpServletResponse response) throws IOException {
+        List<StatisBoxoffice> list =null;
+        if (request.getStatisType() == 0 ){
+            list = dailyBoxofficeService.getStatis(request.getStartDate() , request.getEndDate());
+        }else {
+            list = statisBoxofficeService.getStatisList(request.getStatisType(), request.getStatisInterval());
+        }
+        statisBoxofficeService.outputStatis(list,response);
     }
 
 }

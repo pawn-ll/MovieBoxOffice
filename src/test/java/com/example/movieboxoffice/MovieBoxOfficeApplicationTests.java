@@ -44,9 +44,9 @@ class MovieBoxOfficeApplicationTests {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
-//        actorService.historyInsert();
 //        actorTask.actorDetailSpider();
 //        actorService.DateIntervalInsert("2024-07-03");
+
         System.out.println();
     }
 
