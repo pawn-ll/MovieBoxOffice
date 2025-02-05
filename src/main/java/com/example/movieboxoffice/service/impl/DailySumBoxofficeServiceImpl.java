@@ -16,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,7 +92,13 @@ public class DailySumBoxofficeServiceImpl extends ServiceImpl<DailySumBoxofficeM
             List<String> yAxis = new ArrayList<>();
             dailySumBoxoffices.forEach(dailySumBoxoffice -> {
                 String sumBoxoffice = dailySumBoxoffice.getSumBoxoffice();
-                yAxis.add((sumBoxoffice.substring(0,sumBoxoffice.length()-2)));
+                String unit = sumBoxoffice.substring(sumBoxoffice.length()-1);
+                if (unit.equals("亿")){
+                    BigDecimal bigDecimal = new BigDecimal(sumBoxoffice.substring(0, sumBoxoffice.length() - 1));
+                    yAxis.add(bigDecimal.multiply(new BigDecimal("10000")).toString());
+                }else {
+                    yAxis.add((sumBoxoffice.substring(0, sumBoxoffice.length() - 1)));
+                }
             });
             histoygramVO.setYAxis(yAxis);
 
