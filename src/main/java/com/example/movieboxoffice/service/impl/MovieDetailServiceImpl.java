@@ -9,6 +9,7 @@ import com.example.movieboxoffice.entity.request.MovieDetailPageRequest;
 import com.example.movieboxoffice.entity.vo.MovieDetailVO;
 import com.example.movieboxoffice.mapper.MovieDetailMapper;
 import com.example.movieboxoffice.service.IMovieDetailService;
+import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.utils.Img2Base64Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -16,7 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,6 +38,8 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
     private MovieBoxofficeServiceImpl movieBoxofficeService;
     @Autowired
     private MoviePosterServiceImpl moviePosterService;
+    @Autowired
+    private RedisService redisService;
 
     private final static String PREFIX =  "data:image/jpeg;base64,";
 
@@ -88,17 +94,28 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
                 new Page<>(request.getCurrent(), request.getSize()),
                 new LambdaQueryWrapper<MovieDetail>()
                         .likeRight(MovieDetail::getMovieName, request.getMovieName()));
+
+        // 提前获取所有需要的海报数据
+        List<Long> movieCodes = movieDetailPage.getRecords().stream()
+                .map(MovieDetail::getMovieCode)
+                .collect(Collectors.toList());
+
+        Map<Long, String> posterMap = fetchPostersInBatch(movieCodes);
+
+
         Page<MovieDetailVO> movieDetailVOPage = new Page<>(request.getCurrent(), request.getSize());
         List<MovieDetailVO> movieDetailVOList =  new ArrayList<>();
         if (movieDetailPage.getRecords().size()>0){
-            MovieDetailVO movieDetailVO = null;
-            for ( MovieDetail record : movieDetailPage.getRecords()){
-                movieDetailVO = new MovieDetailVO();
-                BeanUtils.copyProperties(record,movieDetailVO);
-                movieDetailVO.setPosterBase64(moviePosterService.getPoster(record.getMovieCode()));
-                movieDetailVOList.add(movieDetailVO);
-            }
+            movieDetailVOList = movieDetailPage.getRecords().stream()
+                    .map(record -> {
+                        MovieDetailVO movieDetailVO = new MovieDetailVO();
+                        BeanUtils.copyProperties(record, movieDetailVO);
+                        movieDetailVO.setPosterBase64(posterMap.get(record.getMovieCode()));
+                        return movieDetailVO;
+                    })
+                    .collect(Collectors.toList());
         }
+
         movieDetailVOPage.setRecords(movieDetailVOList);
         movieDetailVOPage.setTotal(movieDetailPage.getTotal());
         movieDetailVOPage.setPages(movieDetailPage.getPages());
@@ -115,6 +132,38 @@ public class MovieDetailServiceImpl extends ServiceImpl<MovieDetailMapper, Movie
 
         return movieDetailPage;
     }
+
+
+    // 批量获取海报数据的方法
+    private Map<Long, String> fetchPostersInBatch(List<Long> movieCodes) {
+        Map<Long, String> posterMap = new HashMap<>();
+
+        // 从缓存中获取海报数据
+        List<Object> cachedPosters = redisService.mget(movieCodes.stream().map(Object::toString).collect(Collectors.toList()));
+        for (int i = 0; i < movieCodes.size(); i++) {
+            Long movieCode = movieCodes.get(i);
+            String poster = (String)cachedPosters.get(i);
+            if (poster != null) {
+                posterMap.put(movieCode, poster);
+            }
+        }
+
+        // 获取未命中缓存的海报数据
+        List<Long> missingMovieCodes = movieCodes.stream()
+                .filter(movieCode -> !posterMap.containsKey(movieCode))
+                .collect(Collectors.toList());
+
+        if (!missingMovieCodes.isEmpty()) {
+            List<MoviePoster> missingPosters = moviePosterService.selectList(missingMovieCodes);
+            for (MoviePoster poster : missingPosters) {
+                posterMap.put(poster.getMovieCode(), poster.getPosterBase64());
+                redisService.set(poster.getMovieCode().toString(), poster.getPosterBase64());
+            }
+        }
+
+        return posterMap;
+    }
+
 
     public List<MovieDetail> getDetails(String time){
         if(time == null)

@@ -24,4 +24,6 @@ public interface IMoviePosterService extends IService<MoviePoster> {
     List<MoviePoster> getPosterList(Integer page, Integer size);
 
     Integer hotMoviePoster();
+
+    List<MoviePoster> selectList(List<Long> movieCodes);
 }

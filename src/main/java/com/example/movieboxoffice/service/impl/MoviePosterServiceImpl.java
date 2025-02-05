@@ -72,6 +72,13 @@ public class MoviePosterServiceImpl extends ServiceImpl<MoviePosterMapper, Movie
     public Integer hotMoviePoster() {
         return hotPoster();
     }
+
+    @Override
+    public List<MoviePoster> selectList(List<Long> movieCodes) {
+        return baseMapper.selectList(new LambdaQueryWrapper<MoviePoster>()
+                .in(MoviePoster::getMovieCode, movieCodes));
+    }
+
     private Integer hotPoster(){
         int count = 0;
         int page = 0;

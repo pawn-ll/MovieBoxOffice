@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +25,10 @@ public class RedisService {
     public Object get(String key) {
         return redisTemplate.opsForValue().get(key);
     }
-
+    // 批量获取键的值
+    public List<Object> mget(List<String> keys) {
+        return redisTemplate.opsForValue().multiGet(keys);
+    }
     // 删除键
     public void delete(String key) {
         redisTemplate.delete(key);
