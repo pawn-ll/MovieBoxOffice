@@ -1,5 +1,6 @@
 package com.example.movieboxoffice;
 
+import com.example.movieboxoffice.entity.ConditionException;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.HistoryBoxOfficeSpider;
@@ -7,6 +8,7 @@ import com.example.movieboxoffice.spider.detail.ActorDetailSpider;
 import com.example.movieboxoffice.task.ActorTask;
 import com.example.movieboxoffice.task.SpiderTask;
 import com.example.movieboxoffice.task.StatisTask;
+import com.example.movieboxoffice.utils.SmsUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +40,20 @@ class MovieBoxOfficeApplicationTests {
     private ActorDetailSpider actorDetailSpider;
     @Autowired
     private ActorTask actorTask;
+    @Autowired
+    private SmsUtils smsUtils;
 
     @Test
-    public void testService() throws InterruptedException {
+    public void testService() throws InterruptedException, ConditionException {
 //        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
 //        actorTask.actorDetailSpider();
 //        actorService.DateIntervalInsert("2024-07-03");
-
+        smsUtils.sendSms("18090779929",
+                "票房BoxOffice",
+                "SMS_312825143",
+                "{\"code\":\"1456\"}");
         System.out.println();
     }
 
