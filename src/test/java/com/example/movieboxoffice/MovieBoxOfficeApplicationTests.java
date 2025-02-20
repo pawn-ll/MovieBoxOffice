@@ -45,15 +45,11 @@ class MovieBoxOfficeApplicationTests {
 
     @Test
     public void testService() throws InterruptedException, ConditionException {
-//        spiderTask.updateSumBoxoffice();
+        spiderTask.updateSumBoxoffice();
 //        spiderTask.getDetailByUrl();
 //        spiderTask.setPosterBase64();
 //        actorTask.actorDetailSpider();
 //        actorService.DateIntervalInsert("2024-07-03");
-        smsUtils.sendSms("18090779929",
-                "票房BoxOffice",
-                "SMS_312825143",
-                "{\"code\":\"1456\"}");
         System.out.println();
     }
 

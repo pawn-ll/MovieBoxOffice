@@ -3,13 +3,16 @@ package com.example.movieboxoffice.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.movieboxoffice.entity.*;
+import com.example.movieboxoffice.entity.request.SmsTemplateParam;
 import com.example.movieboxoffice.entity.vo.DailyBoxofficeVO;
+import com.example.movieboxoffice.entity.vo.DailySumBoxofficeVO;
 import com.example.movieboxoffice.service.RedisService;
 import com.example.movieboxoffice.service.impl.*;
 import com.example.movieboxoffice.spider.daily.DailyBoxOfficeSpider;
 import com.example.movieboxoffice.spider.detail.MovieDetailDoubanService;
 import com.example.movieboxoffice.utils.MyConstant;
 import com.example.movieboxoffice.utils.MyDateUtils;
+import com.example.movieboxoffice.utils.SmsUtils;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -48,6 +51,8 @@ public class SpiderTask {
     private MovieBoxofficeServiceImpl movieBoxofficeService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private SmsUtils smsUtils;
 
     @Scheduled(fixedRate = 1000*10)
     public void todaySpiderCrawl() {
@@ -138,6 +143,19 @@ public class SpiderTask {
                 movieBoxofficeService.updateById(byCode);
             }
         }
+        log.info("---------发送今天票房信息总览------------");
+        SmsTemplateParam smsTemplateParam = new SmsTemplateParam();
+        smsTemplateParam.setDate(MyDateUtils.getNowStringDate(MyDateUtils.YYMMDD));
+        DailySumBoxofficeVO todaySum = dailySumBoxofficeService.today();
+        smsTemplateParam.setAllboxoffice(todaySum.getSumBoxoffice());
+        smsTemplateParam.setBoxoffice(todaySum.getSumSplitBoxoffice());
+        try {
+            smsUtils.sendSms(MyConstant.SMS_PHONE, MyConstant.SMS_SIGN, MyConstant.SMS_TEMPLATE_CODE, JSONObject.toJSONString(smsTemplateParam));
+        }catch (Exception e){
+            log.error("短信发送失败");
+            e.printStackTrace();
+        }
+
     }
 
     public void getDetailByUrl() throws InterruptedException {

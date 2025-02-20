@@ -15,4 +15,10 @@ public interface MyConstant {
     String WEB_SITE_VISITOR_COUNT_TODAY = "webSiteVisitorCountToday";
 
     String WEB_SITE_VISITORS_TODAY = "webSiteVisitorsToday";
+
+    String SMS_PHONE = "18090779929";
+
+    String SMS_SIGN = "票房BoxOffice";
+
+    String SMS_TEMPLATE_CODE = "SMS_479100256";
 }
